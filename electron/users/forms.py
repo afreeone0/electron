@@ -11,6 +11,7 @@ class UserLoginForm(AuthenticationForm):
 
 
 class UserRegistrationForm(UserCreationForm):
+    nickname = forms.CharField(widget=forms.TextInput(attrs={}))
 
     class Meta:
         model = User

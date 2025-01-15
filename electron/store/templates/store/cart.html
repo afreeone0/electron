@@ -1,20 +1,5 @@
 {% extends 'base.html' %}
 {% block content %}
-<!-- Login Form -->
-<!--{% if messages %}-->
-<!--{% for message in messages %}-->
-<!--<h1>{{ message }}</h1>-->
-<!--{% endfor %}-->
-<!--{% endif %}-->
-<!--<form action="{% url 'login' %}" method="post">-->
-<!--  <h2>Login</h2>-->
-<!--  {% csrf_token %}-->
-<!--  {{ form.as_p }}-->
-<!--  <input type="submit" value="Login">-->
-<!--</form>-->
-<!--<p><a href="{% url 'registration' %}">not got an account? register then</a></p>-->
-<!--<p><a href="{% url 'index' %}">back to home page</a></p>-->
-
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="index.html">Online Store</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,18 +27,35 @@
     </nav>
 
     <div class="container mt-5">
-        <h1 class="text-center">Login</h1>
-        <form method="post">
-            <div class="form-group">
-                <label for="email">Email address</label>
-                <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email">
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" placeholder="Password">
-            </div>
-            <button type="submit" class="btn btn-primary">Login</button>
-        </form>
+        <h1 class="text-center">Your Cart</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Product</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Product 1</td>
+                    <td>$100</td>
+                    <td>1</td>
+                    <td>$100</td>
+                </tr>
+                <tr>
+                    <td>Product 2</td>
+                    <td>$200</td>
+                    <td>2</td>
+                    <td>$400</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="text-right">
+            <h4>Total: $500</h4>
+            <a href="#" class="btn btn-primary">Checkout</a>
+        </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
