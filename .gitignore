@@ -1,0 +1,29 @@
+# IDE
+.idea/
+
+# OS
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# Temp
+*~
+*.bak
+*.tmp
+*.swp
+*.swo
+*.log
+tasks.txt
+
+# Python
+.venv/
+*.pyc
+__pycache__/
+*.egg-info
+*.dist-info
+
+# Django
+*.sqlite3
+*.db
+media/
+static/

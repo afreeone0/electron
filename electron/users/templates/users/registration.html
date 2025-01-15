@@ -1,0 +1,19 @@
+<html>
+<head>
+<title>{{ title }}</title>
+</head>
+<body>
+<!-- Registration Form -->
+{% if form.errors %}
+{{form.errors}}
+{% endif %}
+<form action="{% url 'registration' %}" method="post">
+  <h2>Register</h2>
+  {% csrf_token %}
+  {{form.as_p}}
+  <input type="submit" value="Register">
+</form>
+<p><a href="{% url 'login' %}">have already registered? login then</a></p>
+<p><a href="{% url 'index' %}">stay as a guest</a></p>
+</body>
+</html>
