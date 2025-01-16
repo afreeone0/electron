@@ -7,13 +7,13 @@ def login(request):
     if request.method == 'POST':
         form = UserLoginForm(data=request.POST)
         if form.is_valid():
-            username = form.username
-            password = form.password
+            username = request.POST['username']
+            password = request.POST['password']
             user = auth.authenticate(username=username, password=password)
             if user:
                 auth.login(request, user)
                 url = reverse('index')
-                redirect(url, permanent=True)
+                return redirect(url, permanent=True)
     else:
         form = UserLoginForm()
     context = {
