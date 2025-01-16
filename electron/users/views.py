@@ -51,3 +51,7 @@ def register(request):
         'form': form,
     }
     return render(request, 'users/registration.html', context=context)
+
+
+def logout(request):
+    pass

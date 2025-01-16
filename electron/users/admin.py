@@ -4,6 +4,5 @@ from .models import User
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    # list_display = ('username', 'nickname', 'email')
-    # ordering = ('nickname',)
-    pass
+    list_display = ('username', 'nickname', 'email')
+    ordering = ('nickname',)

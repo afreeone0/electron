@@ -1,33 +1,36 @@
 {% extends 'base.html' %}
 {% block content %}
-<!-- Registration Form -->
-<!--{% if form.errors %}-->
-<!--{{form.errors}}-->
-<!--{% endif %}-->
-<!--<form action="{% url 'registration' %}" method="post">-->
-<!--  <h2>Register</h2>-->
-<!--  {% csrf_token %}-->
-<!--  {{form.as_p}}-->
-<!--  <input type="submit" value="Register">-->
-<!--</form>-->
-<!--<p><a href="{% url 'login' %}">have already registered? login then</a></p>-->
-<!--<p><a href="{% url 'index' %}">stay as a guest</a></p>-->
-    <div class="container mt-5">
-        <h1 class="text-center">Register</h1>
-        <form method="post">
-            <div class="form-group">
-                <label for="name">Name</label>
-                <input type="text" class="form-control" id="name" placeholder="Enter name">
-            </div>
-            <div class="form-group">
-                <label for="email">Email address</label>
-                <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email">
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" placeholder="Password">
-            </div>
-            <button type="submit" class="btn btn-primary">Register</button>
-        </form>
-    </div>
+<div class="container mt-5">
+
+    {% if form.errors %}
+    {{form.errors}}
+    {% endif %}
+
+    <h1 class="text-center">Register</h1>
+    <form action="{% url 'registration' %}" method="post">
+
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="{{ form.nickname.id_for_label }}">Nickname</label>
+            {{ form.nickname }}
+        </div>
+        <div class="form-group">
+            <label for="{{form.email.id_for_label}}">Email address</label>
+            {{ form.email }}
+        </div>
+        <div class="form-group">
+            <label for="{{ form.password1.id_for_label }}">Password</label>
+            {{ form.password1 }}
+        </div>
+        <div class="form-group">
+            <label for="{{ form.password2.id_for_label }}">Confirm password</label>
+            {{ form.password2 }}
+        </div>
+        <button type="submit" class="btn btn-primary">Register</button>
+    </form>
+
+    <p><a href="{% url 'login' %}">have already registered? login then</a></p>
+
+</div>
 {% endblock %}
