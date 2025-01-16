@@ -22,7 +22,7 @@ def about(request):
     return render(request, 'store/about.html', context=context)
 
 
-def category(request):
+def category(request, category_slug=None):
     context = {
         'title': 'Catalog',
     }
