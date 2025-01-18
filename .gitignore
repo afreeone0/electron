@@ -1,5 +1,6 @@
 # IDE
 .idea/
+*.env
 
 # OS
 Thumbs.db
@@ -22,6 +23,7 @@ print_linux_path.py
 __pycache__/
 *.egg-info
 *.dist-info
+local_settings.py
 
 # Django
 *.sqlite3
