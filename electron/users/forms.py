@@ -4,7 +4,6 @@ from django import forms
 
 
 class UserLoginForm(AuthenticationForm):
-
     class Meta:
         model = User
         fields = ('username', 'password')
@@ -19,10 +18,11 @@ class UserRegistrationForm(UserCreationForm):
 
 
 class UserProfileForm(UserChangeForm):
+    image = forms.ImageField(widget=forms.FileInput(attrs={}), required=False)
     nickname = forms.CharField(widget=forms.TextInput(attrs={}))
     username = forms.CharField(widget=forms.TextInput(attrs={'readonly': True}))
     email = forms.EmailField(widget=forms.EmailInput(attrs={'readonly': True}))
 
     class Meta:
         model = User
-        fields = ('nickname', 'username', 'email')
+        fields = ('image', 'nickname', 'username', 'email')

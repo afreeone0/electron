@@ -1,20 +1,48 @@
 {% extends 'base.html' %}
 {% block content %}
-<form action="{% url 'profile' %}" method="post">
-    {% csrf_token %}
-    <div>
-        <label for="{{ form.nickname.id_for_label }}">nickname</label>
-        {{ form.nickname }}
-    </div>
-    <div>
-        <label for="{{ form.username.id_for_label }}">username</label>
-        {{ form.username }}
-    </div>
-    <div>
-        <label for="{{ form.email.id_for_label }}">email</label>
-        {{ form.email }}
-    </div>
-    <input type="submit" value="Save changes">
-</form>
-<p><a href="{% url 'logout' %}">Log out</a></p>
+<div class="container mt-5">
+
+    {% if messages %}
+    {% for message in messages %}
+    <h1>{{ message }}</h1>
+    {% endfor %}
+    {% endif %}
+
+    {% if form.errors %}
+    {{ form.errors }}
+    {% endif %}
+
+    <h1 class="text-center">your profile page</h1>
+
+    <form action="{% url 'profile' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {% if form.image %}
+        <div>
+            <img src="{{ user.image.url }}" alt="profile's picture" width="300">
+        </div>
+        {% endif %}
+
+        <div class="form-group">
+            <label for="{{ form.nickname.id_for_label }}">nickname</label>
+            {{ form.nickname }}
+        </div>
+        <div class="form-group">
+            <label for="{{ form.username.id_for_label }}">username</label>
+            {{ form.username }}
+        </div>
+        <div class="form-group">
+            <label for="{{ form.email.id_for_label }}">email</label>
+            {{ form.email }}
+        </div>
+        <div class="form-group">
+            <label for="{{ form.image.id_for_label }}">Поменять аватар</label>
+            {{ form.image }}
+        </div>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+    </form>
+
+    <p><a href="{% url 'logout' %}">Log out</a></p>
+
+</div>
 {% endblock %}

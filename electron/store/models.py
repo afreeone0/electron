@@ -1,9 +1,10 @@
 from django.db import models
 from users.models import User
+from operator import add
+from functools import reduce
 
 
 class Category(models.Model):
-
     class Meta:
         verbose_name = 'category'
         verbose_name_plural = 'categories'
@@ -16,7 +17,6 @@ class Category(models.Model):
 
 
 class Product(models.Model):
-
     class Meta:
         verbose_name = 'product'
         verbose_name_plural = 'products'
@@ -29,11 +29,10 @@ class Product(models.Model):
     quantity = models.PositiveIntegerField(default=0)
 
     def __str__(self):
-        return f"{self.name} | {self.price} | {self.category}"
+        return self.name
 
 
 class Cart(models.Model):
-
     class Meta:
         verbose_name = 'cart'
         verbose_name_plural = 'carts'
@@ -41,3 +40,7 @@ class Cart(models.Model):
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
     product = models.ForeignKey(to=Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=0)
+
+    def get_total_price_for_user(self):
+        user_carts = Cart.objects.filter(user=self.user)
+        return reduce(add, map(lambda crt: crt.quantity * crt.product.price, user_carts))

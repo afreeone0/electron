@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, reverse
 from .forms import UserLoginForm, UserProfileForm, UserRegistrationForm
 from django.contrib import auth, messages
+from django.contrib.auth.decorators import login_required
 
 
 def login(request):
@@ -18,13 +19,15 @@ def login(request):
         form = UserLoginForm()
     context = {
         'form': form,
+        'title': 'Login',
     }
     return render(request, 'users/login.html', context=context)
 
 
+@login_required(login_url='login')
 def profile(request):
     if request.method == 'POST':
-        form = UserProfileForm(instance=request.user, data=request.POST)
+        form = UserProfileForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
             form.save()
             url = reverse('profile')
@@ -33,6 +36,7 @@ def profile(request):
         form = UserProfileForm(instance=request.user)
     context = {
         'form': form,
+        'title': 'Profile',
     }
     return render(request, 'users/profile.html', context=context)
 
@@ -49,9 +53,13 @@ def register(request):
         form = UserRegistrationForm()
     context = {
         'form': form,
+        'title': 'Registration',
     }
     return render(request, 'users/registration.html', context=context)
 
 
+@login_required(login_url='login')
 def logout(request):
-    pass
+    auth.logout(request)
+    url = reverse('index')
+    return redirect(url)
