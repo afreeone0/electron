@@ -17,7 +17,7 @@
     <form action="{% url 'profile' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
 
-        {% if form.image %}
+        {% if user.image %}
         <div>
             <img src="{{ user.image.url }}" alt="profile's picture" width="300">
         </div>
