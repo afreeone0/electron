@@ -22,7 +22,7 @@ class Product(models.Model):
         verbose_name_plural = 'products'
 
     image = models.ImageField(upload_to='products/')
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     category = models.ForeignKey(to=Category, on_delete=models.PROTECT)
     price = models.DecimalField(max_digits=13, decimal_places=2)
     description = models.TextField(blank=True)
