@@ -8,6 +8,7 @@
             <tr>
                 <th scope="col">Product</th>
                 <th scope="col">Price</th>
+                <th scope="col">Discounted price</th>
                 <th scope="col">Quantity</th>
                 <th scope="col">Total</th>
             </tr>
@@ -17,8 +18,9 @@
             <tr>
                 <td>{{cart.product}}</td>
                 <td>${{cart.product.price}}</td>
+                <td>${{cart.product.get_price}}</td>
                 <td>{{cart.quantity}}</td>
-                <td>{% widthratio cart.quantity 1 cart.product.price %}</td>
+                <td>{% widthratio cart.quantity 1 cart.product.get_price %}</td>
             </tr>
         {% endfor %}
         </tbody>

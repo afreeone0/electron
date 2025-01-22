@@ -50,4 +50,4 @@ class Cart(models.Model):
 
     def get_total_price_for_user(self):
         user_carts = Cart.objects.filter(user=self.user)
-        return reduce(add, map(lambda crt: crt.quantity * crt.product.price, user_carts))
+        return reduce(add, map(lambda crt: crt.quantity * crt.product.get_price(), user_carts))
