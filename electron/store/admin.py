@@ -5,8 +5,10 @@ from .models import Category, Product, Cart
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'category_slug')
+    fields = ('name', 'category_slug')
     search_fields = ('name',)
     ordering = ('name',)
+    prepopulated_fields = {'category_slug': ('name',)}
 
 
 @admin.register(Product)

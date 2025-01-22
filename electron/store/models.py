@@ -27,9 +27,16 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=13, decimal_places=2)
     description = models.TextField(blank=True)
     quantity = models.PositiveIntegerField(default=0)
+    discount = models.PositiveSmallIntegerField(default=0)
 
     def __str__(self):
         return self.name
+
+    def get_price(self):
+        if self.discount:
+            return self.price / 100 * (100 - self.discount)
+
+        return self.price
 
 
 class Cart(models.Model):

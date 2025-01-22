@@ -8,12 +8,23 @@
         {% for product in products %}
         <div class="col-md-4">
             <div class="card">
+                {% if product.image %}
                 <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                {% endif %}
+
                 <div class="card-body">
                     <h5 class="card-title">{{ product.name }}</h5>
                     <p class="card-text">{{ product.description|truncatewords:"10" }}</p>
+
+                    {% if product.discount %}
+                    <p>$<s>{{product.price}}</s></p>
+                    <p><strong>${{product.get_price}}</strong></p>
+                    <span class="badge bg-warning text-dark">Ckugka {{product.discount}}%</span>
+                    {% else %}
                     <h5>${{product.price}}</h5>
-                    <a href="#" class="btn btn-primary">Add to Cart</a>
+                    {% endif %}
+
+                    <a href="{% url 'cart_add' product.id %}" class="btn btn-primary">Add to Cart</a>
                 </div>
             </div>
         </div>
@@ -25,7 +36,7 @@
 
 <nav>
     <ul class="pagination justify-content-center">
-        <li class="page-item {% if products.has_previous %}disabled{% endif %}">
+        <li class="page-item {% if not products.has_previous %}disabled{% endif %}">
             <a href="{% if products.has_previous %}{% url 'category_on_page' selected_category_slug products.previous_page_number %}{% else %}#{% endif %}" class="page-link">
                 Previous
             </a>
@@ -39,8 +50,8 @@
         </li>
         {% endfor %}
 
-        <li class="page-item {% if not products.has_next %} disabled {% endif %}">
-            <a href="{% if not products.has_next %}{% url 'category_on_page' selected_category_slug products.next_page_number %}{% else %}#{% endif %}" class="page-link">
+        <li class="page-item {% if not products.has_next %}disabled{% endif %}">
+            <a href="{% if products.has_next %}{% url 'category_on_page' selected_category_slug products.next_page_number %}{% else %}#{% endif %}" class="page-link">
                 Next
             </a>
         </li>
