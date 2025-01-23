@@ -27,8 +27,18 @@ def about(request):
 
 def category(request, category_slug):
     page = int(request.GET.get('page', 1))
+
+    discount = request.GET.get('discount', None)
+    order_by_price = request.GET.get('order_by_price', None)
+
     category_object = Category.objects.get(category_slug=category_slug)
     products = Product.objects.filter(category=category_object)
+    if discount:
+        products = products.filter(discount__gt=0)
+
+    if order_by_price and order_by_price != 'default':
+        products = products.order_by(order_by_price)
+
     paginated_products = Paginator(products, 15)
     products_on_page = paginated_products.page(page)
     context = {

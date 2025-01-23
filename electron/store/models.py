@@ -21,7 +21,7 @@ class Product(models.Model):
         verbose_name = 'product'
         verbose_name_plural = 'products'
 
-    image = models.ImageField(upload_to='products/')
+    image = models.ImageField(upload_to='products/', blank=True, null=True)
     name = models.CharField(max_length=100, unique=True)
     category = models.ForeignKey(to=Category, on_delete=models.PROTECT)
     price = models.DecimalField(max_digits=13, decimal_places=2)
