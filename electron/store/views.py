@@ -25,11 +25,12 @@ def about(request):
     return render(request, 'store/about.html', context=context)
 
 
-def category(request, category_slug, page_number=1):
+def category(request, category_slug):
+    page = int(request.GET.get('page', 1))
     category_object = Category.objects.get(category_slug=category_slug)
     products = Product.objects.filter(category=category_object)
     paginated_products = Paginator(products, 15)
-    products_on_page = paginated_products.page(page_number)
+    products_on_page = paginated_products.page(page)
     context = {
         'title': category_object.name,
         'products': products_on_page,

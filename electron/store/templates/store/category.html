@@ -37,21 +37,23 @@
 <nav>
     <ul class="pagination justify-content-center">
         <li class="page-item {% if not products.has_previous %}disabled{% endif %}">
-            <a href="{% if products.has_previous %}{% url 'category_on_page' selected_category_slug products.previous_page_number %}{% else %}#{% endif %}" class="page-link">
+            <a href="{% if products.has_previous %}?page={{products.previous_page_number}}{% else %}#{% endif %}" class="page-link">
                 Previous
             </a>
         </li>
 
-        {% for page_number in products.paginator.page_range %}
-        <li class="page-item">
-            <a href="{% url 'category_on_page' selected_category_slug page_number %}" class="page-link">
-                {{page_number}}
+        {% for page in products.paginator.page_range %}
+        {% if page >= products.number|add:-2 and page <= products.number|add:2 %}
+        <li class="page-item {% if products.number == page %}active{% endif %}">
+            <a href="?page={{page}}" class="page-link">
+                {{page}}
             </a>
         </li>
+        {% endif %}
         {% endfor %}
 
         <li class="page-item {% if not products.has_next %}disabled{% endif %}">
-            <a href="{% if products.has_next %}{% url 'category_on_page' selected_category_slug products.next_page_number %}{% else %}#{% endif %}" class="page-link">
+            <a href="{% if products.has_next %}?page={{products.next_page_number}}{% else %}#{% endif %}" class="page-link">
                 Next
             </a>
         </li>
