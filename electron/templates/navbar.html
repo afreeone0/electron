@@ -42,6 +42,24 @@
                 </a>
             </li>
 
+            {% if selected_category_slug %}
+            <li>
+                <form class="d-flex" role="search" action="{% url 'category' selected_category_slug %}" method="get">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="q">
+
+                    {% if request.GET %}
+                    {% for k, v in request.GET.items %}
+                    <input type="hidden" name="{{k}}" value="{{v}}">
+                    {% endfor %}
+                    {% endif %}
+
+                    <button class="btn btn-outline-success text-white" type="submit">
+                        Search
+                    </button>
+                </form>
+            </li>
+            {% endif %}
+
             {% if user.is_superuser or user.is_staff %}
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'admin:index' %}">Admin pannel</a>

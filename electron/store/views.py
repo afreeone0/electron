@@ -1,9 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseNotFound
 from django.template.loader import render_to_string
 from .models import Category, Product, Cart
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
+from .utils import query_search
 
 
 def index(request):
@@ -30,9 +31,13 @@ def category(request, category_slug):
 
     discount = request.GET.get('discount', None)
     order_by_price = request.GET.get('order_by_price', None)
+    query = request.GET.get('q', None)
 
-    category_object = Category.objects.get(category_slug=category_slug)
+    category_object = get_object_or_404(Category, category_slug=category_slug)
     products = Product.objects.filter(category=category_object)
+    if query:
+        products = query_search(query)
+
     if discount:
         products = products.filter(discount__gt=0)
 
