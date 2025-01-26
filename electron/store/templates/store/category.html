@@ -6,6 +6,12 @@
 <div class="container mt-5">
     <h1 class="text-center">Catalog</h1>
 
+    {% if products %}
+
+    {% if request.GET.q %}
+    <h3>Results by search request</h3>
+    {% endif %}
+
     <div class="dropdown mb-2">
         <button class="btn btn-secondary dropdown-toggle btn-dark" type="button" data-bs-toggle="dropdown"
                 aria-expanded="false">
@@ -58,6 +64,7 @@
             <button type="submit" class="btn btn-primary mx-3 mt-3">submit</button>
         </form>
     </div>
+    {% endif %}
 
     <div class="row">
 
@@ -71,8 +78,14 @@
                      alt="{{ product.name }}">
 
                 <div class="card-body">
-                    <h5 class="card-title">{{ product.name }}</h5>
-                    <p class="card-text">{{ product.description|truncatewords:"10" }}</p>
+
+                    {% autoescape off %}
+                    <h5 class="card-title">{% if request.GET.q %}{{product.headline}}{%else%}{{ product.name }}{%endif%}</h5>
+                    {% endautoescape %}
+
+                    {% autoescape off %}
+                    <p class="card-text">{%if request.GET.q %}{{product.bodyline|truncatewords:"13"}}{%else%}{{ product.description|truncatewords:"10" }}{% endif %}</p>
+                    {% endautoescape %}
 
                     {% if product.discount %}
                     <p>$<s>{{product.price}}</s></p>
@@ -87,11 +100,14 @@
             </div>
         </div>
         {% endfor %}
+        {% else %}
+        <h1>sorry, no products found</h1>
         {% endif %}
 
     </div>
 </div>
 
+{% if products %}
 <nav>
     <ul class="pagination justify-content-center">
         <li class="page-item {% if not products.has_previous %}disabled{% endif %}">
@@ -118,5 +134,6 @@
         </li>
     </ul>
 </nav>
+{% endif %}
 
 {% endblock %}
