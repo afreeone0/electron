@@ -1,5 +1,5 @@
 from .models import Product
-from django.db.models import Q
+from django.contrib.postgres.search import SearchVector
 
 
 def acceptable(set_query: set):
@@ -13,9 +13,4 @@ def query_search(query):
     if query.isdigit() and len(query) <= 7:
         return Product.objects.filter(id=int(query))
     elif len(query) < 100 and acceptable(set(query)):
-        keywords = tuple(filter(lambda word: len(word) > 2, query.split()))
-        q_objects = Q()
-        for kw in keywords:
-            q_objects |= Q(name__icontains=kw) | Q(description__icontains=kw)
-
-        return Product.objects.filter(q_objects)
+        return Product.objects.annotate(search=SearchVector('name', 'description')).filter(search=query)

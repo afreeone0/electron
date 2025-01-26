@@ -34,7 +34,7 @@ def category(request, category_slug):
     query = request.GET.get('q', None)
 
     category_object = get_object_or_404(Category, category_slug=category_slug)
-    products = Product.objects.filter(category=category_object)
+    products = Product.objects.filter(category=category_object, quantity__gte=1)
     if query:
         products = query_search(query)
 
