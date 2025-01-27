@@ -17,6 +17,7 @@ def login(request):
                 return redirect(url, permanent=True)
     else:
         form = UserLoginForm()
+
     context = {
         'form': form,
         'title': 'Login',
@@ -47,7 +48,8 @@ def register(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Registered successfully!')
-            url = reverse('login')
+            auth.login(request, form.instance)
+            url = reverse('index')
             return redirect(url, permanent=True)
     else:
         form = UserRegistrationForm()

@@ -1,6 +1,13 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container mt-5">
+
+    {% if messages %}
+    {% for message in messages %}
+    <h5>{{ message }}</h5>
+    {% endfor %}
+    {% endif %}
+
     <h1 class="text-center">Welcome to Our Online Store</h1>
     <p class="text-center">Your one-stop shop for the latest electronics.</p>
 </div>
