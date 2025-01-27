@@ -24,6 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('store.urls')),
     path('', include('users.urls')),
+    path('cart/', include('cart.urls'))
 ]
 
 handler404 = views.page_not_found

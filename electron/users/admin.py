@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import User
-from store.admin import CartAdmin
+from cart.admin import CartAdmin
 
 
 @admin.register(User)
