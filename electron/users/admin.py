@@ -5,6 +5,6 @@ from store.admin import CartAdmin
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'nickname', 'email')
-    ordering = ('nickname',)
+    list_display = ('username', 'first_name', 'last_name', 'email')
+    ordering = ('first_name',)
     inlines = (CartAdmin,)

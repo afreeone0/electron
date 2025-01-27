@@ -9,7 +9,7 @@
     {% if products %}
 
     {% if request.GET.q %}
-    <h3>Results by search request</h3>
+    <h3>Results by search request {{request.GET.q|lower}}</h3>
     {% endif %}
 
     <div class="dropdown mb-2">

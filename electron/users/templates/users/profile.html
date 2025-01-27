@@ -24,8 +24,12 @@
         {% endif %}
 
         <div class="form-group">
-            <label for="{{ form.nickname.id_for_label }}">nickname</label>
-            {{ form.nickname }}
+            <label for="{{ form.first_name.id_for_label }}">first name</label>
+            {{ form.first_name }}
+        </div>
+        <div class="form-group">
+            <label for="{{ form.last_name.id_for_label }}">last name</label>
+            {{ form.last_name }}
         </div>
         <div class="form-group">
             <label for="{{ form.username.id_for_label }}">username</label>
@@ -43,6 +47,5 @@
     </form>
 
     <p><a href="{% url 'logout' %}">Log out</a></p>
-
 </div>
 {% endblock %}
