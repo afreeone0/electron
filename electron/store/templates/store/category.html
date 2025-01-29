@@ -33,7 +33,7 @@
                     <input type="hidden" name="q" value="{{request.GET.q}}">
                     {% endif %}
                     <label class="form-check-label" for="flexCheckDefault">
-                        Goods with discount
+                        Товары со скидкой
                     </label>
                 </div>
 
@@ -43,7 +43,7 @@
                     <input class="form-check-input" type="radio" name="order_by_price" id="flexRadioDefault1" value="default"
                            {% if not request.GET.order_by_price or request.GET.order_by_price == "default" %}checked{% endif %}>
                     <label class="form-check-label" for="flexRadioDefault1">
-                        Default
+                        По умолчанию
                     </label>
                 </div>
 
@@ -51,7 +51,7 @@
                     <input class="form-check-input" type="radio" name="order_by_price" id="flexRadioDefault2" value="price"
                            {% if request.GET.order_by_price == "price" %}checked{% endif %}>
                     <label class="form-check-label" for="flexRadioDefault2">
-                        po vozrastaniu
+                        По возрастанию
                     </label>
                 </div>
 
@@ -59,12 +59,12 @@
                     <input class="form-check-input" type="radio" name="order_by_price" id="flexRadioDefault3" value="-price"
                            {% if request.GET.order_by_price == "-price" %}checked{% endif %}>
                     <label class="form-check-label" for="flexRadioDefault3">
-                        po ubyvaniu
+                        По убыванию
                     </label>
                 </div>
 
             </div>
-            <button type="submit" class="btn btn-primary mx-3 mt-3">submit</button>
+            <button type="submit" class="btn btn-primary mx-3 mt-3">Применить</button>
         </form>
     </div>
     {% endif %}
@@ -98,6 +98,7 @@
                     <h5>${{product.price}}</h5>
                     {% endif %}
 
+                    {% csrf_token %}
                     <a href="{% url 'cart_add' product.product_slug %}" class="btn btn-primary">Add to Cart</a>
                 </div>
             </div>
