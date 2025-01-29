@@ -33,13 +33,11 @@
                                         <div class="col p-0">
                                             <div class="input-group">
                                                 <span class="input-group-btn">
-                                                    <button type="button" class="btn btn-dark btn-sm decrement" data-cart-id=""
-                                                            data-cart-change-url="">-</button>
+                                                    <a class="btn btn-light btn-sm decrement" href="{% url 'cart_take_away' cart.product.product_slug %}">-</a>
                                                 </span>
                                                 <input type="text" class="form-control number" value="{{cart.quantity}}" readonly>
                                                 <span class="input-group-btn">
-                                                    <button type="button" class="btn btn-dark btn-sm increment" data-cart-id=""
-                                                            data-cart-change-url="">+</button>
+                                                    <a class="btn btn-light btn-sm increment" href="{% url 'cart_add' cart.product.product_slug %}">+</a>
                                                 </span>
                                             </div>
                                         </div>

@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, reverse
 from .forms import UserLoginForm, UserProfileForm, UserRegistrationForm
 from django.contrib import auth, messages
 from django.contrib.auth.decorators import login_required
+from cart.models import Cart
 
 
 def login(request):
@@ -11,9 +12,16 @@ def login(request):
             username = request.POST['username']
             password = request.POST['password']
             user = auth.authenticate(username=username, password=password)
+
+            session_key = request.session.session_key
+
             if user:
                 auth.login(request, user)
                 messages.success(request, 'Logged in successfully!')
+
+                if session_key:
+                    Cart.objects.filter(session_key=session_key).update(user=user)
+
                 url = reverse('index')
                 return redirect(url, permanent=True)
     else:
@@ -47,9 +55,15 @@ def register(request):
     if request.method == 'POST':
         form = UserRegistrationForm(data=request.POST)
         if form.is_valid():
+            session_key = request.session.session_key
+
             form.save()
             messages.success(request, 'Registered successfully!')
             auth.login(request, form.instance)
+
+            if session_key:
+                Cart.objects.filter(session_key=session_key).update(user=form.instance)
+
             url = reverse('index')
             return redirect(url, permanent=True)
     else:
