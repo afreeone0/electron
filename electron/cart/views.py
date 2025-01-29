@@ -15,8 +15,8 @@ def cart(request):
 
 
 @login_required(login_url='login')
-def add_to_the_cart(request, product_id):
-    product = Product.objects.get(pk=product_id)
+def cart_add(request, product_slug):
+    product = Product.objects.get(product_slug=product_slug)
     user_carts = Cart.objects.filter(user=request.user, product=product)
     if not user_carts.exists():
         Cart.objects.create(user=request.user, product=product, quantity=1)
@@ -28,8 +28,8 @@ def add_to_the_cart(request, product_id):
 
 
 @login_required(login_url='login')
-def take_one_away(request, product_id):
-    product = Product.objects.get(pk=product_id)
+def cart_take_away(request, product_slug):
+    product = Product.objects.get(product_slug=product_slug)
     user_carts = Cart.objects.filter(user=request.user, product=product)
     if user_carts.exists():
         user_cart = user_carts[0]
@@ -42,7 +42,7 @@ def take_one_away(request, product_id):
 
 
 @login_required(login_url='login')
-def clear_up_the_cart(request):
+def cart_clear_up(request):
     user_carts = Cart.objects.filter(user=request.user)
     if user_carts.exists():
         for user_cart in user_carts:
@@ -51,8 +51,8 @@ def clear_up_the_cart(request):
 
 
 @login_required(login_url='login')
-def remove_from_cart(request, product_id):
-    product = Product.objects.get(pk=product_id)
+def cart_remove(request, product_slug):
+    product = Product.objects.get(product_slug=product_slug)
     user_carts = Cart.objects.filter(user=request.user, product=product)
     if user_carts.exists():
         user_cart = user_carts[0]

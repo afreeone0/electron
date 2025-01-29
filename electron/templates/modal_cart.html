@@ -1,0 +1,77 @@
+{% load static %}
+{% load cart_tags %}
+{% user_carts request as carts %}
+
+<div class="text-center">
+
+    <div>
+        <button type="button" class="btn btn-white d-flex my-2" id="modalButton"
+        aria-expanded="false" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <img class="mx-1" src="{% static 'cart.png' %}" alt="Cart" width="24" height="24">
+            <span id="goods-in-cart-count">{% if carts %}{{carts.get_total_quantity}}{% else %}0{% endif %}</span>
+        </button>
+    </div>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
+                </div>
+                {% if carts %}
+                <div class="modal-body">
+                    <h3 class="text-center mb-4">Корзина</h3>
+                    <div class="container" id="cart-items-container">
+                        <div class="card mb-3 text-bg-light shadow-lg">
+                            {% for cart in carts %}
+                            <div class="card-header">
+                                <h5 class="card-title">{{cart.product}}</h5>
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <div class="row text-center">
+                                        <div class="col p-0">
+                                            <div class="input-group">
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-dark btn-sm decrement" data-cart-id=""
+                                                            data-cart-change-url="">-</button>
+                                                </span>
+                                                <input type="text" class="form-control number" value="{{cart.quantity}}" readonly>
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-dark btn-sm increment" data-cart-id=""
+                                                            data-cart-change-url="">+</button>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col p-0">
+                                            <p>x {{cart.product.get_price}} = </p>
+                                        </div>
+                                        <div class="col p-0"><strong>${{cart.get_price_for_product}}</strong></div>
+                                        <div class="col p-0">
+                                            <a href="{% url 'cart_remove' cart.product.product_slug %}" class="remove-from-cart" data-cart-id="">
+                                                <img class="mx-1" src="{% static 'bin_icon.png' %}" alt="remove" width="16" height="16">
+                                            </a>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                            {% endfor %}
+                        </div>
+                        <div class="card mb-3 shadow-lg">
+                            <div class="card-footer">
+                                <p class="float-left">Итого <strong>{{carts.get_total_quantity}}</strong> товар(ов) на сумму</p>
+                                <h4 class="float-left"><strong>${{carts.get_total_price_for_user}}</strong></h4>
+                            </div>
+                        </div>
+                        <a class="btn btn-dark" href="#">Оформить заказ</a>
+                    </div>
+                </div>
+                {% else %}
+                <div class="modal-body">
+                    <h3 class="text-center mb-4">Корзина пуста</h3>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

@@ -13,6 +13,7 @@ def login(request):
             user = auth.authenticate(username=username, password=password)
             if user:
                 auth.login(request, user)
+                messages.success(request, 'Logged in successfully!')
                 url = reverse('index')
                 return redirect(url, permanent=True)
     else:

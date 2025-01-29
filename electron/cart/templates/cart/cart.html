@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
 {% if carts %}
 <div class="container mt-5">
@@ -8,29 +9,41 @@
             <tr>
                 <th scope="col">Product</th>
                 <th scope="col">Price</th>
-                <th scope="col">Discounted price</th>
                 <th scope="col">Quantity</th>
                 <th scope="col">Total</th>
+                <th scope="col"></th>
             </tr>
         </thead>
         <tbody>
         {% for cart in carts %}
             <tr>
-                <td>{{cart.product}}</td>
-                <td>${{cart.product.price}}</td>
+                <td><h5 class="card-title">{{cart.product}}</h5></td>
                 <td>${{cart.product.get_price}}</td>
-                <td>{{cart.quantity}}</td>
-                <td>{% widthratio cart.quantity 1 cart.product.get_price %}</td>
+                <td>
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-dark btn-sm decrement" data-cart-id=""
+                                data-cart-change-url="">-</button>
+                        {{cart.quantity}}
+                        <button type="button" class="btn btn-dark btn-sm increment" data-cart-id=""
+                                data-cart-change-url="">+</button>
+                    </span>
+                </td>
+                <td><strong>${{cart.get_price_for_product}}</strong></td>
+                <td>
+                    <a href="{% url 'cart_remove' cart.product.product_slug %}" class="remove-from-cart" data-cart-id="">
+                        <img class="mx-1" src="{% static 'bin_icon.png' %}" alt="remove" width="16" height="16">
+                    </a>
+                </td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
     <div class="text-right">
-        <h4>Total: ${{carts.0.get_total_price_for_user}}</h4>
+        <h4>Total: ${{carts.get_total_price_for_user}}</h4>
         <a href="#" class="btn btn-primary">Order</a>
     </div>
 </div>
 {% else %}
-<h1>Ваша корзина пуста.</h1>
+<h1 class="text-center">Ваша корзина пуста.</h1>
 {% endif %}
 {% endblock %}
