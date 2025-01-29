@@ -62,6 +62,7 @@
                                 <p class="float-left">Итого <strong>{{carts.get_total_quantity}}</strong> товар(ов) на сумму</p>
                                 <h4 class="float-left"><strong>${{carts.get_total_price_for_user}}</strong></h4>
                             </div>
+                            <a href="{% url 'cart_clear_up' %}">Очистить корзину</a>
                         </div>
                         <a class="btn btn-dark" href="#">Оформить заказ</a>
                     </div>
