@@ -3,7 +3,7 @@
 
 {% block content %}
 
-
+{% if orders %}
 <header>
     <h1>Мои Заказы</h1>
 </header>
@@ -12,56 +12,32 @@
     <section id="order-list">
         <!-- Здесь будут отображаться заказы -->
 
-       <div class="order-item">
-            <div class="order-header">
-                <h3 class="order-id">Заказ #12345</h3>
-                <span class="order-date">Дата: 2023-10-27</span>
-                <span class="order-status">Статус: Обрабатывается</span>
-            </div>
-            <div class="order-details">
-                <ul class="order-products">
-                   <li>
-                       <span class="product-name">Футболка</span>
-                       <span class="product-qty">Кол-во: 2</span>
-                       <span class="product-price">Цена: 500 руб.</span>
-                    </li>
-                     <li>
-                       <span class="product-name">Джинсы</span>
-                       <span class="product-qty">Кол-во: 1</span>
-                       <span class="product-price">Цена: 1500 руб.</span>
-                    </li>
-                </ul>
-               <div class="order-total">
-                    <span>Итого:</span>
-                    <span class="total-price">2500 руб.</span>
-               </div>
-            </div>
-        </div>
-
+        {% for order in orders %}
         <div class="order-item">
             <div class="order-header">
-                <h3 class="order-id">Заказ #12346</h3>
-                <span class="order-date">Дата: 2023-10-26</span>
-                <span class="order-status">Статус: Доставлен</span>
+                <h3 class="order-id">Заказ #{{order.id}}</h3>
+                <span class="order-date">Дата: {{order.created_timestamp}}</span>
+                <span class="order-status">Статус: <strong>{{order.status}}</strong></span>
             </div>
             <div class="order-details">
                 <ul class="order-products">
+
+                    {% for item in order.orderitem_set.all %}
                    <li>
-                       <span class="product-name">Кеды</span>
-                       <span class="product-qty">Кол-во: 1</span>
-                       <span class="product-price">Цена: 3000 руб.</span>
+                       <span class="product-name">{{item.name}}</span>
+                       <span class="product-qty">Кол-во: {{ item.quantity }}</span>
+                       <span class="product-price">Цена: ${{ item.price }}</span>
+                       <span class="product-price">Всего: ${{ item.products_price }}</span>
                     </li>
+                    {% endfor %}
+
                 </ul>
-                <div class="order-total">
-                    <span>Итого:</span>
-                    <span class="total-price">3000 руб.</span>
-                </div>
             </div>
         </div>
-
-
-        <!-- Добавляйте здесь другие заказы, как выше -->
-
+        {% endfor %}
     </section>
 </main>
+{% else %}
+<h5>Нет заказов</h5>
+{% endif %}
 {% endblock %}

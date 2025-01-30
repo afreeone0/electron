@@ -20,10 +20,17 @@ def login(request):
                 messages.success(request, 'Logged in successfully!')
 
                 if session_key:
-                    Cart.objects.filter(session_key=session_key).update(user=user)
+                    # Cart.objects.filter(session_key=session_key).update(user=user)
+                    for cart_not_auth in Cart.objects.filter(session_key=session_key):
+                        cart_auth = Cart.objects.filter(user=user, product=cart_not_auth.product)[0]
+                        if cart_auth:
+                            cart_auth.quantity += cart_not_auth.quantity
+                            cart_auth.save()
+                        else:
+                            cart_not_auth.user = user
+                            cart_not_auth.save()
 
-                url = reverse('index')
-                return redirect(url, permanent=True)
+                return redirect(reverse('index'), permanent=True)
     else:
         form = UserLoginForm()
 
@@ -64,8 +71,7 @@ def register(request):
             if session_key:
                 Cart.objects.filter(session_key=session_key).update(user=form.instance)
 
-            url = reverse('index')
-            return redirect(url, permanent=True)
+            return redirect(reverse('index'), permanent=True)
     else:
         form = UserRegistrationForm()
     context = {
