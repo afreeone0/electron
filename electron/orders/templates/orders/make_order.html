@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+{% load cart_tags %}
+{% user_carts request as carts %}
+
+{% if carts %}
+<div class="container mt-5">
+    <h2 class="text-center">Order</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Product</th>
+                <th scope="col">Price</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for cart in carts %}
+            <tr>
+                <td><h5 class="card-title">{{cart.product}}</h5></td>
+                <td>${{cart.product.get_price}}</td>
+                <td>
+                    <span class="input-group-btn">
+                        {{cart.quantity}}
+                    </span>
+                </td>
+                <td><strong>${{cart.get_price_for_product}}</strong></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="card mb-3 shadow-lg">
+        <div class="card-footer">
+            <p class="float-left">Итого <strong>{{carts.get_total_quantity}}</strong> товар(ов) на сумму</p>
+            <h4 class="float-left"><strong>${{carts.get_total_price_for_user}}</strong></h4>
+        </div>
+    </div>
+
+    <div class="order-details">
+        <h2 class="text-center">Детали заказа</h2>
+        <div class="form-group">
+            <label for="name">Имя*:</label>
+            <input type="text" id="name" required>
+        </div>
+        <div class="form-group">
+            <label for="surname">Фамилия*:</label>
+            <input type="text" id="surname" required>
+        </div>
+        <div class="form-group">
+            <label for="phone">Номер телефона*:</label>
+            <input type="tel" id="phone" placeholder="В формате: XXX-XXX-XX-XX" pattern="\d{3}-\d{3}-\d{2}-\d{2}" required>
+        </div>
+        <div class="form-group">
+            <label>Способ доставки:</label>
+            <label>
+                <input type="radio" name="delivery_method" value="delivery" checked> Нужна доставка
+            </label>
+            <label>
+                <input type="radio" name="delivery_method" value="pickup"> Самовывоз
+            </label>
+        </div>
+        <div class="form-group">
+            <label for="address">Адрес доставки*:</label>
+            <textarea id="address" required></textarea>
+        </div>
+        <div class="form-group">
+            <label>Способ оплаты:</label>
+            <label>
+                 <input type="radio" name="payment_method" value="card" checked> Оплата картой
+            </label>
+            <label>
+                <input type="radio" name="payment_method" value="cash_card_on_delivery"> Наличными/картой при получении
+            </label>
+        </div>
+    </div>
+    <div class="text-right">
+        <a href="#" class="btn btn-dark">3аказaTb</a>
+    </div>
+</div>
+{% else %}
+<h1 class="text-center">nothing is ordered</h1>
+{% endif %}
+{% endblock %}

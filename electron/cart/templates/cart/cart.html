@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
+
+{% load cart_tags %}
+{% user_carts request as carts %}
 {% if carts %}
 <div class="container mt-5">
     <h1 class="text-center">Your Cart</h1>
@@ -39,7 +42,7 @@
     <a href="{% url 'cart_clear_up' %}">Очистить корзину</a>
     <div class="text-right">
         <h4>Total: ${{carts.get_total_price_for_user}}</h4>
-        <a href="#" class="btn btn-primary">Order</a>
+        <a href="{% url 'make_order' %}" class="btn btn-primary">Order</a>
     </div>
 </div>
 {% else %}

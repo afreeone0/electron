@@ -51,12 +51,30 @@
                 <a class="nav-link" href="{% url 'cart' %}">Cart</a>
             </li>
 
+            {% if not user.is_authenticated %}
             <li class="nav-item">
                 <a class="nav-link"
-                   href="{% if not user.is_authenticated %}{% url 'login' %}{% else %}{% url 'profile' %}{% endif %}">
-                    {% if not user.is_authenticated %}Login{% else %}Profile{% endif %}
+                   href="{% url 'login' %}">
+                    Login
                 </a>
             </li>
+            {% else %}
+            <li class="nav-item">
+                <a class="nav-link"
+                   href="{% url 'profile' %}">
+                    Profile
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link"
+                   href="{% url 'orders_archive' %}">
+                    Orders archive
+                </a>
+            </li>
+            {% endif %}
+
+
+
 
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'about' %}">About Us</a>

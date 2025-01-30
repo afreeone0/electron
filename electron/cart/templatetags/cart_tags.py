@@ -7,7 +7,7 @@ register = template.Library()
 @register.simple_tag()
 def user_carts(request):
     if request.user.is_authenticated:
-        return Cart.objects.filter(user=request.user)
+        return Cart.objects.filter(user=request.user).order_by('product__id')
 
     if not request.session.session_key:
         request.session.create()

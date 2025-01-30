@@ -5,13 +5,8 @@ from store.models import Product
 
 
 def cart(request):
-    if request.user.is_authenticated:
-        carts = Cart.objects.filter(user=request.user)
-    else:
-        carts = Cart.objects.filter(session_key=request.session.session_key).order_by('product__id')
     context = {
         'title': 'Your cart',
-        'carts': carts,
     }
     return render(request, 'cart/cart.html', context=context)
 

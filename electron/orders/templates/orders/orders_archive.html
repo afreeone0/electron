@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<header>
+    <h1>Мои Заказы</h1>
+</header>
+
+<main>
+    <section id="order-list">
+        <!-- Здесь будут отображаться заказы -->
+
+       <div class="order-item">
+            <div class="order-header">
+                <h3 class="order-id">Заказ #12345</h3>
+                <span class="order-date">Дата: 2023-10-27</span>
+                <span class="order-status">Статус: Обрабатывается</span>
+            </div>
+            <div class="order-details">
+                <ul class="order-products">
+                   <li>
+                       <span class="product-name">Футболка</span>
+                       <span class="product-qty">Кол-во: 2</span>
+                       <span class="product-price">Цена: 500 руб.</span>
+                    </li>
+                     <li>
+                       <span class="product-name">Джинсы</span>
+                       <span class="product-qty">Кол-во: 1</span>
+                       <span class="product-price">Цена: 1500 руб.</span>
+                    </li>
+                </ul>
+               <div class="order-total">
+                    <span>Итого:</span>
+                    <span class="total-price">2500 руб.</span>
+               </div>
+            </div>
+        </div>
+
+        <div class="order-item">
+            <div class="order-header">
+                <h3 class="order-id">Заказ #12346</h3>
+                <span class="order-date">Дата: 2023-10-26</span>
+                <span class="order-status">Статус: Доставлен</span>
+            </div>
+            <div class="order-details">
+                <ul class="order-products">
+                   <li>
+                       <span class="product-name">Кеды</span>
+                       <span class="product-qty">Кол-во: 1</span>
+                       <span class="product-price">Цена: 3000 руб.</span>
+                    </li>
+                </ul>
+                <div class="order-total">
+                    <span>Итого:</span>
+                    <span class="total-price">3000 руб.</span>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Добавляйте здесь другие заказы, как выше -->
+
+    </section>
+</main>
+{% endblock %}
