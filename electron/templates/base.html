@@ -14,6 +14,12 @@
 
 {% block modal_cart %}{% endblock %}
 
+{% if messages %}
+{% for message in messages %}
+<h5>{{ message }}</h5>
+{% endfor %}
+{% endif %}
+
 {% block content %}
 {% endblock %}
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
