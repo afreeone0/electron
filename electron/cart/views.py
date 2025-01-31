@@ -6,7 +6,7 @@ from store.models import Product
 
 def cart(request):
     context = {
-        'title': 'Your cart',
+        'title': 'Моя корзина',
     }
     return render(request, 'cart/cart.html', context=context)
 

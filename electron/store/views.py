@@ -20,7 +20,7 @@ def page_not_found(request, exception=None):
 
 def about(request):
     context = {
-        'title': 'About us',
+        'title': 'О нас',
     }
     return render(request, 'store/about.html', context=context)
 
@@ -51,3 +51,12 @@ def category(request, category_slug):
         'selected_category_slug': category_slug,
     }
     return render(request, 'store/category.html', context=context)
+
+
+def product(request, product_slug):
+    _product = get_object_or_404(Product, product_slug=product_slug)
+    context = {
+        'title': _product.name,
+        'product': _product,
+    }
+    return render(request, 'store/product.html', context=context)

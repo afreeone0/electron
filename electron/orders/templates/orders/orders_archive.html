@@ -15,7 +15,7 @@
         {% for order in orders %}
         <div class="order-item">
             <div class="order-header">
-                <h3 class="order-id">Заказ #{{order.id}}</h3>
+                <h3 class="order-id">ID заказа: {{order.id}}</h3>
                 <span class="order-date">Дата: {{order.created_timestamp}}</span>
                 <span class="order-status">Статус: <strong>{{order.status}}</strong></span>
             </div>
@@ -27,7 +27,7 @@
                        <span class="product-name">{{item.name}}</span>
                        <span class="product-qty">Кол-во: {{ item.quantity }}</span>
                        <span class="product-price">Цена: ${{ item.price }}</span>
-                       <span class="product-price">Всего: ${{ item.products_price }}</span>
+                       <span class="product-price">Итоговая цена: ${{ item.products_price }}</span>
                     </li>
                     {% endfor %}
 

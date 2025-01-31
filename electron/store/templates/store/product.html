@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block modal_cart %}
+{% include 'modal_cart.html' %}
+{% endblock %}
+
+{% block content %}
+
+
+<main class="product-details">
+    <div class="container">
+        <section class="product-gallery">
+            <div class="main-image">
+                <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'default_product_image.png' %}{% endif %}"
+                     alt="{{product.name}}"
+                     width="400">
+            </div>
+        </section>
+
+        <section class="product-info">
+            <h1>{{product.name}}</h1>
+            <div class="product-price">
+                {% if product.discount %}
+                <p>$<s>{{product.price}}</s></p>
+                <p><strong>${{product.get_price}}</strong></p>
+                <span class="badge bg-warning text-dark">Ckugka {{product.discount}}%</span>
+                {% else %}
+                <h5>${{product.price}}</h5>
+                {% endif %}
+            </div>
+            <div class="product-description">
+                <p>
+                    Описание: {{ product.description }}
+                </p>
+            </div>
+
+            <div class="product-actions">
+                <a href="{% url 'cart_add' product.product_slug %}" class="btn btn-primary">Добавить в корзину</a>
+            </div>
+        </section>
+    </div>
+</main>
+
+{% endblock %}

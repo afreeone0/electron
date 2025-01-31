@@ -36,8 +36,7 @@ def make_order(request):
                             quantity = cart_item.quantity
 
                             if product.quantity < quantity:
-                                raise ValidationError(f'Недостаточное количество товара {name} на складе\
-                                                       В наличии - {product.quantity}')
+                                raise ValidationError(f'Недостаточное количество {name}, в наличии {product.quantity}')
 
                             OrderItem.objects.create(
                                 order=order,
@@ -82,7 +81,7 @@ def orders_archive(request):
         ).order_by('-id')
     )
     context = {
-        'title': 'Orders archive',
+        'title': 'Мои заказы',
         'orders': orders,
     }
     return render(request, 'orders/orders_archive.html', context=context)

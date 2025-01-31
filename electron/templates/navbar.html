@@ -48,27 +48,27 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'cart' %}">Cart</a>
+                <a class="nav-link" href="{% url 'cart' %}">Корзина</a>
             </li>
 
             {% if not user.is_authenticated %}
             <li class="nav-item">
                 <a class="nav-link"
                    href="{% url 'login' %}">
-                    Login
+                    Войти
                 </a>
             </li>
             {% else %}
             <li class="nav-item">
                 <a class="nav-link"
                    href="{% url 'profile' %}">
-                    Profile
+                    Профиль
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link"
                    href="{% url 'orders_archive' %}">
-                    Orders archive
+                    Мои заказы
                 </a>
             </li>
             {% endif %}
@@ -77,12 +77,12 @@
 
 
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'about' %}">About Us</a>
+                <a class="nav-link" href="{% url 'about' %}">О нас</a>
             </li>
 
             {% if user.is_superuser or user.is_staff %}
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'admin:index' %}">Admin pannel</a>
+                <a class="nav-link" href="{% url 'admin:index' %}">Админ-панель</a>
             </li>
             {% endif %}
 

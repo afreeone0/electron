@@ -36,7 +36,7 @@ def login(request):
 
     context = {
         'form': form,
-        'title': 'Login',
+        'title': 'Войти',
     }
     return render(request, 'users/login.html', context=context)
 
@@ -53,7 +53,7 @@ def profile(request):
         form = UserProfileForm(instance=request.user)
     context = {
         'form': form,
-        'title': 'Profile',
+        'title': 'Профиль',
     }
     return render(request, 'users/profile.html', context=context)
 
@@ -65,7 +65,7 @@ def register(request):
             session_key = request.session.session_key
 
             form.save()
-            messages.success(request, 'Registered successfully!')
+            messages.success(request, 'Вы успешно зарегестрировались')
             auth.login(request, form.instance)
 
             if session_key:
@@ -76,7 +76,7 @@ def register(request):
         form = UserRegistrationForm()
     context = {
         'form': form,
-        'title': 'Registration',
+        'title': 'Регистрация',
     }
     return render(request, 'users/registration.html', context=context)
 

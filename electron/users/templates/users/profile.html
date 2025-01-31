@@ -11,40 +11,40 @@
     {{ form.errors }}
     {% endif %}
 
-    <h1 class="text-center">your profile page</h1>
+    <h1 class="text-center">Ваш профиль</h1>
 
     <form action="{% url 'profile' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
 
         {% if user.image %}
         <div>
-            <img src="{{ user.image.url }}" alt="profile's picture" width="300">
+            <img src="{{ user.image.url }}" alt="аватар" width="300">
         </div>
         {% endif %}
 
         <div class="form-group">
-            <label for="{{ form.first_name.id_for_label }}">first name</label>
+            <label for="{{ form.first_name.id_for_label }}">Имя</label>
             {{ form.first_name }}
         </div>
         <div class="form-group">
-            <label for="{{ form.last_name.id_for_label }}">last name</label>
+            <label for="{{ form.last_name.id_for_label }}">Фамилия</label>
             {{ form.last_name }}
         </div>
         <div class="form-group">
-            <label for="{{ form.username.id_for_label }}">username</label>
+            <label for="{{ form.username.id_for_label }}">Логин</label>
             {{ form.username }}
         </div>
         <div class="form-group">
-            <label for="{{ form.email.id_for_label }}">email</label>
+            <label for="{{ form.email.id_for_label }}">Электронная почта</label>
             {{ form.email }}
         </div>
         <div class="form-group">
             <label for="{{ form.image.id_for_label }}">Поменять аватар</label>
             {{ form.image }}
         </div>
-        <button type="submit" class="btn btn-primary">Save changes</button>
+        <button type="submit" class="btn btn-primary">Сохранить изменения</button>
     </form>
 
-    <p><a href="{% url 'logout' %}">Log out</a></p>
+    <p><a href="{% url 'logout' %}">Выйти</a></p>
 </div>
 {% endblock %}

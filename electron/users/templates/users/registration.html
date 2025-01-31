@@ -6,39 +6,39 @@
     {{form.errors}}
     {% endif %}
 
-    <h1 class="text-center">Register</h1>
+    <h1 class="text-center">Регистрация</h1>
     <form action="{% url 'registration' %}" method="post">
 
         {% csrf_token %}
 
         <div class="form-group">
-            <label for="{{ form.first_name.id_for_label }}">First name</label>
+            <label for="{{ form.first_name.id_for_label }}">Имя</label>
             {{ form.first_name }}
         </div>
         <div class="form-group">
-            <label for="{{ form.last_name.id_for_label }}">Last name</label>
+            <label for="{{ form.last_name.id_for_label }}">Фамилия</label>
             {{ form.last_name }}
         </div>
         <div class="form-group">
-            <label for="{{ form.username.id_for_label }}">Username</label>
+            <label for="{{ form.username.id_for_label }}">Логин</label>
             {{ form.username }}
         </div>
         <div class="form-group">
-            <label for="{{form.email.id_for_label}}">Email address</label>
+            <label for="{{form.email.id_for_label}}">Адрес электронной почты</label>
             {{ form.email }}
         </div>
         <div class="form-group">
-            <label for="{{ form.password1.id_for_label }}">Password</label>
+            <label for="{{ form.password1.id_for_label }}">Пароль</label>
             {{ form.password1 }}
         </div>
         <div class="form-group">
-            <label for="{{ form.password2.id_for_label }}">Confirm password</label>
+            <label for="{{ form.password2.id_for_label }}">Подтвердите пароль</label>
             {{ form.password2 }}
         </div>
-        <button type="submit" class="btn btn-primary">Register</button>
+        <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
     </form>
 
-    <p><a href="{% url 'login' %}">have already registered? login then</a></p>
+    <p><a href="{% url 'login' %}">Уже есть аккаунт?</a></p>
 
 </div>
 {% endblock %}

@@ -8,18 +8,18 @@
 {% load static %}
 {% load electron_tags %}
 <div class="container mt-5">
-    <h1 class="text-center">Catalog</h1>
+    <h1 class="text-center">Каталог</h1>
 
     {% if products %}
 
     {% if request.GET.q %}
-    <h3>Results by search request {{request.GET.q|lower}}</h3>
+    <h3>Результаты поиска по запросу {{request.GET.q|lower}}</h3>
     {% endif %}
 
     <div class="dropdown mb-2">
         <button class="btn btn-secondary dropdown-toggle btn-dark" type="button" data-bs-toggle="dropdown"
                 aria-expanded="false">
-            Filters
+            Фильтры
         </button>
         <form action="{% url 'category' selected_category_slug %}"
               method="get"
@@ -37,7 +37,7 @@
                     </label>
                 </div>
 
-                <p class="text-white mx-3 mt-3">Sort:</p>
+                <p class="text-white mx-3 mt-3">Сортировать:</p>
 
                 <div class="form check text-white mx-3">
                     <input class="form-check-input" type="radio" name="order_by_price" id="flexRadioDefault1" value="default"
@@ -51,7 +51,7 @@
                     <input class="form-check-input" type="radio" name="order_by_price" id="flexRadioDefault2" value="price"
                            {% if request.GET.order_by_price == "price" %}checked{% endif %}>
                     <label class="form-check-label" for="flexRadioDefault2">
-                        По возрастанию
+                        По возрастанию цены
                     </label>
                 </div>
 
@@ -59,7 +59,7 @@
                     <input class="form-check-input" type="radio" name="order_by_price" id="flexRadioDefault3" value="-price"
                            {% if request.GET.order_by_price == "-price" %}checked{% endif %}>
                     <label class="form-check-label" for="flexRadioDefault3">
-                        По убыванию
+                        По убыванию цены
                     </label>
                 </div>
 
@@ -76,14 +76,18 @@
         <div class="col-md-4">
             <div class="card">
 
-                <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'default_product_image.png' %}{% endif %}"
-                     class="card-img-top"
-                     alt="{{ product.name }}">
+                <a href="{% url 'product' product.product_slug %}">
+                    <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'default_product_image.png' %}{% endif %}"
+                         class="card-img-top"
+                         alt="{{ product.name }}">
+                </a>
 
                 <div class="card-body">
 
                     {% autoescape off %}
-                    <h5 class="card-title">{% if request.GET.q %}{{product.headline}}{%else%}{{ product.name }}{%endif%}</h5>
+                    <a href="{% url 'product' product.product_slug %}">
+                        <h5 class="card-title">{% if request.GET.q %}{{product.headline}}{%else%}{{ product.name }}{%endif%}</h5>
+                    </a>
                     {% endautoescape %}
 
                     {% autoescape off %}
@@ -99,13 +103,13 @@
                     {% endif %}
 
                     {% csrf_token %}
-                    <a href="{% url 'cart_add' product.product_slug %}" class="btn btn-primary">Add to Cart</a>
+                    <a href="{% url 'cart_add' product.product_slug %}" class="btn btn-primary">Добавить в корзину</a>
                 </div>
             </div>
         </div>
         {% endfor %}
         {% else %}
-        <h1>sorry, no products found</h1>
+        <h1>Товары не найдены</h1>
         {% endif %}
 
     </div>

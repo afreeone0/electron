@@ -6,14 +6,14 @@
 {% user_carts request as carts %}
 {% if carts %}
 <div class="container mt-5">
-    <h1 class="text-center">Your Cart</h1>
+    <h1 class="text-center">Моя корзина</h1>
     <table class="table">
         <thead>
             <tr>
-                <th scope="col">Product</th>
-                <th scope="col">Price</th>
-                <th scope="col">Quantity</th>
-                <th scope="col">Total</th>
+                <th scope="col">Товар</th>
+                <th scope="col">Цена</th>
+                <th scope="col">Количество</th>
+                <th scope="col">Итоговая цена</th>
                 <th scope="col"></th>
             </tr>
         </thead>
@@ -42,7 +42,7 @@
     <a href="{% url 'cart_clear_up' %}">Очистить корзину</a>
     <div class="text-right">
         <h4>Total: ${{carts.get_total_price_for_user}}</h4>
-        <a href="{% url 'make_order' %}" class="btn btn-primary">Order</a>
+        <a href="{% url 'make_order' %}" class="btn btn-primary">Заказать</a>
     </div>
 </div>
 {% else %}
