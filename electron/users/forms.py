@@ -1,6 +1,7 @@
 from django.contrib.auth.forms import AuthenticationForm, UserChangeForm, UserCreationForm
 from .models import User
 from django import forms
+from validators import get_validators_list
 
 
 class UserLoginForm(AuthenticationForm):
@@ -21,6 +22,12 @@ class UserProfileForm(UserChangeForm):
     last_name = forms.CharField(widget=forms.TextInput(attrs={}))
     username = forms.CharField(widget=forms.TextInput(attrs={'readonly': True}))
     email = forms.EmailField(widget=forms.EmailInput(attrs={'readonly': True}))
+
+    def clean_image(self):
+        image = self.cleaned_data['image']
+        for validator in get_validators_list():
+            validator(image)
+        return image
 
     class Meta:
         model = User
