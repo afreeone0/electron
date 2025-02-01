@@ -1,84 +1,85 @@
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import redirect, reverse
+from django.urls import reverse_lazy
 from .forms import UserLoginForm, UserProfileForm, UserRegistrationForm
 from django.contrib import auth, messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import LoginView
 from cart.models import Cart
+from django.views.generic import CreateView, UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-def login(request):
-    if request.method == 'POST':
-        form = UserLoginForm(data=request.POST)
-        if form.is_valid():
-            username = request.POST['username']
-            password = request.POST['password']
-            user = auth.authenticate(username=username, password=password)
+class UserLoginView(LoginView):
+    template_name = 'users/login.html'
+    form_class = UserLoginForm
+    success_url = reverse_lazy('index')
 
-            session_key = request.session.session_key
+    def form_valid(self, form):
+        user = form.get_user()
 
-            if user:
-                auth.login(request, user)
-                messages.success(request, 'Logged in successfully!')
+        session_key = self.request.session.session_key
 
-                if session_key:
-                    # Cart.objects.filter(session_key=session_key).update(user=user)
-                    for cart_not_auth in Cart.objects.filter(session_key=session_key):
-                        cart_auth = Cart.objects.filter(user=user, product=cart_not_auth.product)[0]
-                        if cart_auth:
-                            cart_auth.quantity += cart_not_auth.quantity
-                            cart_auth.save()
-                        else:
-                            cart_not_auth.user = user
-                            cart_not_auth.save()
-
-                return redirect(reverse('index'), permanent=True)
-    else:
-        form = UserLoginForm()
-
-    context = {
-        'form': form,
-        'title': 'Войти',
-    }
-    return render(request, 'users/login.html', context=context)
-
-
-@login_required(login_url='login')
-def profile(request):
-    if request.method == 'POST':
-        form = UserProfileForm(request.POST, request.FILES, instance=request.user)
-        if form.is_valid():
-            form.save()
-            url = reverse('profile')
-            return redirect(url, permanent=True)
-    else:
-        form = UserProfileForm(instance=request.user)
-    context = {
-        'form': form,
-        'title': 'Профиль',
-    }
-    return render(request, 'users/profile.html', context=context)
-
-
-def register(request):
-    if request.method == 'POST':
-        form = UserRegistrationForm(data=request.POST)
-        if form.is_valid():
-            session_key = request.session.session_key
-
-            form.save()
-            messages.success(request, 'Вы успешно зарегестрировались')
-            auth.login(request, form.instance)
+        if user:
+            auth.login(self.request, user)
+            messages.success(self.request, 'Logged in successfully!')
 
             if session_key:
-                Cart.objects.filter(session_key=session_key).update(user=form.instance)
+                for cart_not_auth in Cart.objects.filter(session_key=session_key):
+                    cart_auth = Cart.objects.filter(user=user, product=cart_not_auth.product).first()
+                    if cart_auth:
+                        cart_auth.quantity += cart_not_auth.quantity
+                        cart_auth.save()
+                    else:
+                        cart_not_auth.user = user
+                        cart_not_auth.save()
 
             return redirect(reverse('index'), permanent=True)
-    else:
-        form = UserRegistrationForm()
-    context = {
-        'form': form,
-        'title': 'Регистрация',
-    }
-    return render(request, 'users/registration.html', context=context)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Войти'
+        return context
+
+
+class UserProfileView(LoginRequiredMixin, UpdateView):
+    template_name = 'users/profile.html'
+    form_class = UserProfileForm
+    success_url = reverse_lazy('profile')
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Профиль обновлён')
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Профиль'
+        return context
+
+
+class UserRegistrationView(CreateView):
+    template_name = 'users/registration.html'
+    form_class = UserRegistrationForm
+    success_url = reverse_lazy('index')
+
+    def form_valid(self, form):
+        session_key = self.request.session.session_key
+
+        form.save()
+        messages.success(self.request, 'Вы успешно зарегестрировались')
+        auth.login(self.request, form.instance)
+
+        if session_key:
+            Cart.objects.filter(session_key=session_key).update(user=form.instance)
+
+        return redirect(reverse('index'), permanent=True)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Регистрация'
+        return context
 
 
 @login_required(login_url='login')
