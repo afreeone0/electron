@@ -30,6 +30,8 @@ DEBUG = os.environ.get('DEBUG')
 
 ALLOWED_HOSTS = []
 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 
 # Application definition
 
