@@ -9,13 +9,15 @@ def acceptable(set_query: set):
     return True
 
 
-def query_search(query, products):
+def query_search(query, products, api=False):
     if query.isdigit() and len(query) <= 7:
         return products.filter(id=int(query))
     elif len(query) < 100 and acceptable(set(query)):
         vector = SearchVector('name', 'description')
         query = SearchQuery(query)
         result = products.annotate(rank=SearchRank(vector, query)).filter(rank__gt=0).order_by('-rank')
+        if api:
+            return result
         result = result.annotate(headline=SearchHeadline(
             'name',
             query,
