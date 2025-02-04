@@ -1,8 +1,12 @@
+import rest_framework.views
 from rest_framework import generics
+from cart.models import Cart
 from store.models import Product, Category
 from store.utils import query_search
 from . import serializers
 from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.response import Response
+from rest_framework import status
 
 
 # PRODUCT PRODUCT PRODUCT PRODUCT PRODUCT PRODUCT PRODUCT PRODUCT PRODUCT
@@ -56,3 +60,27 @@ class CategoryRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = serializers.CategorySerializer
     queryset = Category.objects.order_by('name')
     lookup_field = 'pk'
+
+
+# CART CART CART CART CART CART CART CART CART CART CART CART CART CART CART CART
+class CartListCreateDestroy(generics.ListCreateAPIView):
+    serializer_class = serializers.CartSerializer
+
+    def get_queryset(self):
+        return Cart.objects.filter(user=self.request.user)
+
+    def delete(self, request):
+        queryset = self.get_queryset()
+        queryset.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class CartRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
+    lookup_field = 'pk'
+    serializer_class = serializers.CartSerializer
+
+    def get_queryset(self):
+        return Cart.objects.filter(user=self.request.user)
+
+    def put(self, request, *args, **kwargs):
+        return rest_framework.views.APIView.http_method_not_allowed(self, request)

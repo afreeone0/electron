@@ -7,4 +7,7 @@ urlpatterns = [
 
     path('v1/categories/', views.CategoryListCreate.as_view()),
     path('v1/categories/<int:pk>/', views.CategoryRetrieveUpdateDestroy.as_view()),
+
+    path('v1/carts/', views.CartListCreateDestroy.as_view()),
+    path('v1/carts/<int:pk>/', views.CartRetrieveUpdateDestroy.as_view()),
 ]
