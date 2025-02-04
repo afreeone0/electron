@@ -47,19 +47,17 @@ class ProductListCreate(generics.ListCreateAPIView):
 class ProductRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.order_by('-id')
     serializer_class = serializers.ProductSerializer
-    lookup_field = 'pk'
 
 
 # CATEGORY CATEGORY CATEGORY CATEGORY CATEGORY CATEGORY CATEGORY CATEGORY CATEGORY
-class CategoryListCreate(generics.ListCreateAPIView):
+class CategoryListCreate(generics.ListAPIView):
     serializer_class = serializers.CategorySerializer
     queryset = Category.objects.order_by('name')
 
 
-class CategoryRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
+class CategoryRetrieve(generics.RetrieveAPIView):
     serializer_class = serializers.CategorySerializer
     queryset = Category.objects.order_by('name')
-    lookup_field = 'pk'
 
 
 # CART CART CART CART CART CART CART CART CART CART CART CART CART CART CART CART
@@ -67,20 +65,42 @@ class CartListCreateDestroy(generics.ListCreateAPIView):
     serializer_class = serializers.CartSerializer
 
     def get_queryset(self):
-        return Cart.objects.filter(user=self.request.user)
+        if self.request.user.is_authenticated:
+            return Cart.objects.filter(user=self.request.user).order_by('product__id')
+
+        return Cart.objects.filter(session_key=self.request.session.session_key).order_by('product__id')
 
     def delete(self, request):
-        queryset = self.get_queryset()
-        queryset.delete()
+        self.get_queryset().delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def post(self, request, *args, **kwargs):
+        if not (request.session.session_key or request.user.is_authenticated):
+            request.session.create()
+
+        if not request.user.is_authenticated:
+            request.data['session_key'] = request.session.session_key
+        else:
+            request.data['user'] = request.user
+
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class CartRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
-    lookup_field = 'pk'
     serializer_class = serializers.CartSerializer
 
     def get_queryset(self):
-        return Cart.objects.filter(user=self.request.user)
+        if self.request.user.is_authenticated:
+            return Cart.objects.filter(user=self.request.user).order_by('product__id')
+
+        if not self.request.session.session_key:
+            self.request.session.create()
+
+        return Cart.objects.filter(session_key=self.request.session.session_key).order_by('product__id')
 
     def put(self, request, *args, **kwargs):
         return rest_framework.views.APIView.http_method_not_allowed(self, request)
