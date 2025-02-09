@@ -25,7 +25,7 @@ class CartSerializer(serializers.ModelSerializer):
 class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderItem
-        fields = '__all__'
+        exclude = ('created_timestamp', 'order')
 
 
 class OrderSerializer(serializers.ModelSerializer):
@@ -33,4 +33,15 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = '__all__'
+        fields = (
+            "id",
+            "user",
+            "phone_number",
+            "created_timestamp",
+            "requires_delivery",
+            "delivery_address",
+            "payment_on_get",
+            "is_paid",
+            "status",
+            "orderItems",
+        )
