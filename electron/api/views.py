@@ -1,16 +1,19 @@
 import rest_framework.views
 from rest_framework import generics
-from cart.models import Cart
-from store.models import Product, Category
-from orders.models import Order
-from store.utils import query_search
-from . import serializers
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework import viewsets
+from rest_framework import mixins
+
+from . import serializers
+from store.utils import query_search
+
+from cart.models import Cart
+from store.models import Product, Category
+from orders.models import Order
 
 
-# PRODUCT PRODUCT PRODUCT PRODUCT PRODUCT PRODUCT PRODUCT PRODUCT PRODUCT
 class ProductLimitOffsetPagination(LimitOffsetPagination):
     limit_query_param = 'limit'
     offset_query_param = 'offset'
@@ -18,7 +21,9 @@ class ProductLimitOffsetPagination(LimitOffsetPagination):
     default_limit = 20
 
 
-class ProductListCreate(generics.ListCreateAPIView):
+class ProductViewSet(mixins.ListModelMixin,
+                     mixins.RetrieveModelMixin,
+                     viewsets.GenericViewSet):
     serializer_class = serializers.ProductSerializer
     pagination_class = ProductLimitOffsetPagination
 
@@ -45,24 +50,15 @@ class ProductListCreate(generics.ListCreateAPIView):
         return products
 
 
-class ProductRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Product.objects.order_by('-id')
-    serializer_class = serializers.ProductSerializer
-
-
-# CATEGORY CATEGORY CATEGORY CATEGORY CATEGORY CATEGORY CATEGORY CATEGORY CATEGORY
-class CategoryListCreate(generics.ListAPIView):
+class CategoryViewSet(mixins.ListModelMixin,
+                      mixins.RetrieveModelMixin,
+                      viewsets.GenericViewSet):
     serializer_class = serializers.CategorySerializer
     queryset = Category.objects.order_by('name')
 
 
-class CategoryRetrieve(generics.RetrieveAPIView):
-    serializer_class = serializers.CategorySerializer
-    queryset = Category.objects.order_by('name')
-
-
-# CART CART CART CART CART CART CART CART CART CART CART CART CART CART CART CART
-class CartListCreateDestroy(generics.ListCreateAPIView):
+class CartListCreateDestroy(mixins.ListModelMixin,
+                            generics.GenericAPIView):
     serializer_class = serializers.CartSerializer
 
     def get_queryset(self):
@@ -71,7 +67,10 @@ class CartListCreateDestroy(generics.ListCreateAPIView):
 
         return Cart.objects.filter(session_key=self.request.session.session_key).order_by('product__id')
 
-    def delete(self, request):
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
         self.get_queryset().delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -107,15 +106,7 @@ class CartRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
         return rest_framework.views.APIView.http_method_not_allowed(self, request)
 
 
-# ORDERS ORDERS ORDERS ORDERS ORDERS ORDERS ORDERS ORDERS ORDERS ORDERS ORDERS ORDERS
-class OrderListCreate(generics.ListCreateAPIView):
-    serializer_class = serializers.OrderSerializer
-
-    def get_queryset(self):
-        return Order.objects.filter(user=self.request.user)
-
-
-class OrderRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
+class OrderViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.OrderSerializer
 
     def get_queryset(self):
