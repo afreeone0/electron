@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
 
     'rest_framework',
+    'rest_framework.authtoken',
     'debug_toolbar',
 
     'users',
@@ -168,3 +169,9 @@ INTERNAL_IPS = [
 
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = 'login'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}

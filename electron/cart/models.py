@@ -15,6 +15,8 @@ class CartQuerySet(models.QuerySet):
 
 
 class Cart(models.Model):
+    objects = CartQuerySet().as_manager()
+
     class Meta:
         verbose_name = 'cart'
         verbose_name_plural = 'carts'
@@ -28,4 +30,14 @@ class Cart(models.Model):
     def get_price_for_product(self):
         return round(self.product.get_price() * self.quantity, 2)
 
-    objects = CartQuerySet().as_manager()
+    @classmethod
+    def add_to_cart(cls, user, session_key, product, quantity):
+        try:
+            cart_item = cls.objects.get(user=user, session_key=session_key, product=product)
+            cart_item.quantity += quantity
+            cart_item.save()
+            return cart_item
+        except cls.DoesNotExist:
+            cart_item = cls(user=user, session_key=session_key, product=product, quantity=quantity)
+            cart_item.save()
+            return cart_item
