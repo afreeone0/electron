@@ -1,7 +1,10 @@
 from rest_framework import serializers
+from django.core.exceptions import ValidationError
 from cart.models import Cart
 from store.models import Product, Category
 from orders.models import Order, OrderItem
+from users.models import User
+from validators import get_validators_list
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -58,3 +61,39 @@ class OrderSerializer(serializers.ModelSerializer):
             orderItem_data['price'] = product.get_price()
             OrderItem.objects.create(order=order, **orderItem_data)
         return order
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'first_name', 'last_name', 'email', 'image', 'phone_number')
+        extra_kwargs = {
+            'password': {'write_only': True, 'required': True, 'style': {'input_type': 'password'}},
+            'phone_number': {'required': False},
+            'image': {'required': False}
+        }
+
+    def validate_image(self, image):
+        try:
+            for validator in get_validators_list():
+                    validator(image)
+        except ValidationError as ve:
+            raise serializers.ValidationError(str(ve))
+        return image
+
+    def create(self, validated_data):
+        password = validated_data.pop('password')
+        user = self.Meta.model(**validated_data)
+        user.set_password(password)
+        user.save()
+        return user
+
+
+    def update(self, instance, validated_data):
+        password = validated_data.pop('password', None)
+        if password:
+            instance.set_password(password)
+        for key, value in validated_data.items():
+            setattr(instance, key, value)
+        instance.save()
+        return instance

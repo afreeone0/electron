@@ -1,11 +1,9 @@
 from django.contrib import auth
-from rest_framework import views
+from django.db import IntegrityError
+from rest_framework import views, status, generics, viewsets, mixins
 from rest_framework.decorators import action
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
-from rest_framework import status
-from rest_framework import viewsets
-from rest_framework import mixins
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 
@@ -145,3 +143,58 @@ class LoginAPIView(views.APIView):
             return Response({'token': token.key}, status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+class LogoutAPIView(views.APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        try:
+            token = Token.objects.get(user=request.user)
+            token.delete()
+            request.session.flush()
+            return Response({'message': 'you have been logged out'}, status=status.HTTP_204_NO_CONTENT)
+        except Token.DoesNotExist:
+            return Response({'message': 'there is no such token'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            print(str(e))
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class RegistrationAPIView(views.APIView):
+    serializer_class = serializers.UserSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            try:
+                user = serializer.save()
+                response_serializer = self.serializer_class(instance=user)
+                return Response(response_serializer.data, status=status.HTTP_201_CREATED)
+            except IntegrityError as error:
+                return Response({'error': 'username is already taken'}, status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ProfileAPIView(mixins.RetrieveModelMixin,
+                     mixins.UpdateModelMixin,
+                     mixins.CreateModelMixin,
+                     mixins.DestroyModelMixin,
+                     generics.GenericAPIView):
+    serializer_class = serializers.UserSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
