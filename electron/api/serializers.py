@@ -23,6 +23,9 @@ class CartSerializer(serializers.ModelSerializer):
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(read_only=True, max_length=150)
+    price = serializers.DecimalField(read_only=True, max_digits=13, decimal_places=2)
+
     class Meta:
         model = OrderItem
         exclude = ('created_timestamp', 'order')
@@ -45,3 +48,13 @@ class OrderSerializer(serializers.ModelSerializer):
             "status",
             "orderItems",
         )
+
+    def create(self, validated_data):
+        orderItems_data = validated_data.pop('orderItems')
+        order = Order.objects.create(**validated_data)
+        for orderItem_data in orderItems_data:
+            product = Product.objects.get(pk=orderItem_data['product'].pk)
+            orderItem_data['name'] = product.name
+            orderItem_data['price'] = product.get_price()
+            OrderItem.objects.create(order=order, **orderItem_data)
+        return order

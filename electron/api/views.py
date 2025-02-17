@@ -106,12 +106,21 @@ class CartViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class OrderViewSet(viewsets.ModelViewSet):
+class OrderViewSet(mixins.RetrieveModelMixin,
+                   mixins.ListModelMixin,
+                   viewsets.GenericViewSet):
     serializer_class = serializers.OrderSerializer
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         return Order.objects.filter(user=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        request.data['user'] = request.user.pk
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class LoginAPIView(views.APIView):
