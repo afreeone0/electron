@@ -133,7 +133,6 @@ class LoginAPIView(views.APIView):
         user = auth.authenticate(username=username, password=password)
         if user:
             token, created = Token.objects.get_or_create(user=user)
-            auth.login(request, user)
             if session_key:
                 for cart_not_auth in Cart.objects.filter(session_key=session_key):
                     cart_auth = Cart.objects.filter(user=user, product=cart_not_auth.product).first()
@@ -156,8 +155,7 @@ class LogoutAPIView(views.APIView):
             token = Token.objects.get(user=request.user)
             token.delete()
             request.session.flush()
-            auth.logout(request)
-            return Response({'message': 'you have been logged out'}, status=status.HTTP_204_NO_CONTENT)
+            return Response(status=status.HTTP_204_NO_CONTENT)
         except Token.DoesNotExist:
             return Response({'message': 'there is no such token'}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
