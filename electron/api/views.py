@@ -166,7 +166,7 @@ class LogoutAPIView(views.APIView):
 
 
 class RegistrationAPIView(views.APIView):
-    serializer_class = serializers.UserSerializer
+    serializer_class = serializers.RegistrationSerializer
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)

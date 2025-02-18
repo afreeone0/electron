@@ -19,7 +19,7 @@ def validate_image_integrity(image):
         try:
             img = Image.open(image)
             img.verify()
-            image.close()
+            img.close()
         except IOError:
             raise ValidationError('Загруженный файл содержит вредоносный код')
 

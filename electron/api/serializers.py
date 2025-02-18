@@ -89,7 +89,6 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
-
     def update(self, instance, validated_data):
         password = validated_data.pop('password', None)
         if password:
@@ -98,3 +97,24 @@ class UserSerializer(serializers.ModelSerializer):
             setattr(instance, key, value)
         instance.save()
         return instance
+
+
+class RegistrationSerializer(serializers.ModelSerializer):
+    password1 = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'})
+    password2 = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'})
+
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'password1', 'password2', 'first_name', 'last_name', 'email')
+
+    def validate(self, data):
+        if data['password1'] != data.pop('password2'):
+            raise serializers.ValidationError("Passwords don't match")
+        return data
+
+    def create(self, validated_data):
+        password = validated_data.pop('password1')
+        user = self.Meta.model(**validated_data)
+        user.set_password(password)
+        user.save()
+        return user
