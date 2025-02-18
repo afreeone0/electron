@@ -70,7 +70,8 @@ class UserSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'password': {'write_only': True, 'required': True, 'style': {'input_type': 'password'}},
             'phone_number': {'required': False},
-            'image': {'required': False}
+            'image': {'required': False},
+            'username': {'read_only': True}
         }
 
     def validate_image(self, image):

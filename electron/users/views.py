@@ -29,8 +29,10 @@ class UserLoginView(LoginView):
                     if cart_auth:
                         cart_auth.quantity += cart_not_auth.quantity
                         cart_auth.save()
+                        cart_not_auth.delete()
                     else:
                         cart_not_auth.user = user
+                        cart_not_auth.session_key = None
                         cart_not_auth.save()
 
             return redirect(reverse('index'), permanent=True)

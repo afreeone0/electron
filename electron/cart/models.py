@@ -31,7 +31,7 @@ class Cart(models.Model):
         return round(self.product.get_price() * self.quantity, 2)
 
     @classmethod
-    def add_to_cart(cls, user, session_key, product, quantity):
+    def add_to_cart(cls, product, quantity, user=None, session_key=None):
         try:
             cart_item = cls.objects.get(user=user, session_key=session_key, product=product)
             cart_item.quantity += quantity

@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 
+from users.models import User
 from . import serializers
 from store.utils import query_search
 
@@ -71,10 +72,13 @@ class CartViewSet(viewsets.ModelViewSet):
         return Cart.objects.filter(session_key=self.request.session.session_key).order_by('product__id')
 
     def create(self, request, *args, **kwargs):
-        user = request.user if request.user.is_authenticated else None
-        if not (request.user.is_authenticated or request.session.session_key):
-            request.session.create()
-        session_key = request.session.session_key if request.session.session_key else None
+        user_or_session_key = {}
+        if request.user.is_authenticated:
+            user_or_session_key['user'] = request.user
+        else:
+            if not request.session.session_key:
+                request.session.create()
+            user_or_session_key['session_key'] = request.session.session_key
 
         data = request.data
         product, quantity = data.get('product'), data.get('quantity')
@@ -94,7 +98,7 @@ class CartViewSet(viewsets.ModelViewSet):
         except ValueError:
             return Response({'error': 'quantity must be a number'}, status=status.HTTP_400_BAD_REQUEST)
 
-        cart_item = Cart.add_to_cart(user=user, session_key=session_key, product=product_obj, quantity=quantity)
+        cart_item = Cart.add_to_cart(product=product_obj, quantity=quantity, **user_or_session_key)
         serializer = self.serializer_class(cart_item)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -116,8 +120,8 @@ class OrderViewSet(mixins.RetrieveModelMixin,
     def create(self, request, *args, **kwargs):
         request.data['user'] = request.user.pk
         serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
+        if serializer.is_valid():
+            serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
@@ -129,7 +133,6 @@ class LoginAPIView(views.APIView):
         user = auth.authenticate(username=username, password=password)
         if user:
             token, created = Token.objects.get_or_create(user=user)
-            print(created)
             auth.login(request, user)
             if session_key:
                 for cart_not_auth in Cart.objects.filter(session_key=session_key):
@@ -153,6 +156,7 @@ class LogoutAPIView(views.APIView):
             token = Token.objects.get(user=request.user)
             token.delete()
             request.session.flush()
+            auth.logout(request)
             return Response({'message': 'you have been logged out'}, status=status.HTTP_204_NO_CONTENT)
         except Token.DoesNotExist:
             return Response({'message': 'there is no such token'}, status=status.HTTP_404_NOT_FOUND)
@@ -171,30 +175,17 @@ class RegistrationAPIView(views.APIView):
                 user = serializer.save()
                 response_serializer = self.serializer_class(instance=user)
                 return Response(response_serializer.data, status=status.HTTP_201_CREATED)
-            except IntegrityError as error:
+            except IntegrityError:
                 return Response({'error': 'username is already taken'}, status.HTTP_400_BAD_REQUEST)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ProfileAPIView(mixins.RetrieveModelMixin,
+class ProfileViewSet(mixins.RetrieveModelMixin,
                      mixins.UpdateModelMixin,
-                     mixins.CreateModelMixin,
-                     mixins.DestroyModelMixin,
-                     generics.GenericAPIView):
+                     viewsets.GenericViewSet):
     serializer_class = serializers.UserSerializer
+    permission_classes = (IsAuthenticated,)
 
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
-
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-    def patch(self, request, *args, **kwargs):
-        return self.partial_update(request, *args, **kwargs)
+    def get_queryset(self):
+        return User.objects.filter(pk=self.request.user.id)
