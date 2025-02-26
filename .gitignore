@@ -16,6 +16,7 @@ desktop.ini
 *.log
 tasks.txt
 print_linux_path.py
+api_test_notes.xlsx
 
 # Python
 .venv/

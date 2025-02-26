@@ -87,7 +87,7 @@ class OrdersArchiveView(LoginRequiredMixin, ListView):
         q_set = (
             Order.objects.filter(user=self.request.user).prefetch_related(
                 Prefetch(
-                    'orderitem_set',
+                    'orderItems',
                     queryset=OrderItem.objects.select_related('product'),
                 )
             ).order_by('-id')
