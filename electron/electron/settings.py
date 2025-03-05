@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+
+import django.core.cache.backends.dummy
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -183,4 +185,11 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'CRUD API with token-based auth',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False
+}
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+        'TIMEOUT': 0,
+    }
 }

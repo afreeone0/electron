@@ -1,8 +1,7 @@
 from django.contrib import messages
 from django.db import transaction
 from django.db.models import Prefetch
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
 from .forms import CreateOrderForm
 from cart.models import Cart
 from .models import Order, OrderItem
