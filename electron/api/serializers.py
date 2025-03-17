@@ -77,7 +77,7 @@ class UserSerializer(serializers.ModelSerializer):
     def validate_image(self, image):
         try:
             for validator in get_validators_list():
-                    validator(image)
+                validator(image)
         except ValidationError as ve:
             raise serializers.ValidationError(str(ve))
         return image
