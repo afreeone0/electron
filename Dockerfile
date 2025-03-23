@@ -11,5 +11,4 @@ ENTRYPOINT ["python3", "manage.py", "migrate", "&&", "gunicorn", "-w", "3", "-b"
 
 FROM nginx AS proxy
 COPY --from=builder /electron/staticfiles /var/www/static
-COPY --from=builder /electron/media /var/www/media
 COPY ./nginx.conf /etc/nginx/

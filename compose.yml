@@ -20,6 +20,8 @@ services:
       EMAIL_HOST: $(EMAIL_HOST)
       EMAIL_PORT: $(EMAIL_PORT)
       EMAIL_HOST_USER: $(EMAIL_HOST_USER)
+    volumes:
+      - "electron_media:/electron/media"
   db:
     image: postgres:17.4
     container_name: electron_db
@@ -40,6 +42,8 @@ services:
       - backend
     ports:
       - "80:80"
+    volumes:
+      - "electron_media:/var/www/media"
 
 volumes:
   electron_db_data:
