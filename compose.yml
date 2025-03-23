@@ -1,0 +1,44 @@
+services:
+  backend:
+    build:
+      target: builder
+    image: electron:0.1-beta
+    container_name: electron_backend
+    depends_on:
+      - db
+    environment:
+      SECRET_KEY: $(DJANGO_SECRET_KEY)
+      DEBUG: $(DEBUG)
+      DB_NAME: $(DB_NAME)
+      DB_ENGINE: $(DB_ENGINE)
+      DB_USER: $(DB_USER)
+      DB_PASSWORD: $(DB_PASSWORD)
+      DB_HOST: $(DB_HOST)
+      DB_PORT: $(DB_PORT)
+      EMAIL_HOST_PASSWORD: $(EMAIL_HOST_PASSWORD)
+      EMAIL_USE_SSL: $(EMAIL_USE_SSL)
+      EMAIL_HOST: $(EMAIL_HOST)
+      EMAIL_PORT: $(EMAIL_PORT)
+      EMAIL_HOST_USER: $(EMAIL_HOST_USER)
+  db:
+    image: postgres:17.4
+    container_name: electron_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - "electron_db_data:/var/lib/postgresql/data"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  proxy:
+    build:
+      target: proxy
+    image: electron_proxy:0.1
+    container_name: electron_proxy
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+
+volumes:
+  electron_db_data:
