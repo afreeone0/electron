@@ -47,3 +47,4 @@ services:
 
 volumes:
   electron_db_data:
+  electron_media:
