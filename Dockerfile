@@ -7,7 +7,6 @@ RUN pip install --no-cache-dir gunicorn
 RUN pip install --no-cache-dir -r requirements.txt
 COPY ./electron .
 RUN python3 manage.py collectstatic --noinput
-RUN python3 manage.py migrate
 ENTRYPOINT ["python3", "manage.py", "migrate", "&&", "gunicorn", "-w", "3", "-b", "0.0.0.0:8000", "electron.wsgi:application"]
 
 FROM nginx AS proxy
