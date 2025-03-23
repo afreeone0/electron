@@ -1,0 +1,101 @@
+services:
+  - type: web
+    name: backend
+    env: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    buildCommand: docker build --target builder -t electron:0.1-beta .
+    plan: standard
+    envVars:
+      - key: SECRET_KEY
+        fromService:
+          name: backend
+          type: secret
+          key: DJANGO_SECRET_KEY
+      - key: DEBUG
+        fromService:
+          name: backend
+          type: secret
+          key: DEBUG
+      - key: DB_NAME
+        fromService:
+          name: backend
+          type: secret
+          key: DB_NAME
+      - key: DB_ENGINE
+        fromService:
+          name: backend
+          type: secret
+          key: DB_ENGINE
+      - key: DB_USER
+        fromService:
+          name: backend
+          type: secret
+          key: DB_USER
+      - key: DB_PASSWORD
+        fromService:
+          name: backend
+          type: secret
+          key: DB_PASSWORD
+      - key: DB_HOST
+        fromService:
+          name: backend
+          type: secret
+          key: DB_HOST
+      - key: DB_PORT
+        fromService:
+          name: backend
+          type: secret
+          key: DB_PORT
+      - key: EMAIL_HOST_PASSWORD
+        fromService:
+          name: backend
+          type: secret
+          key: EMAIL_HOST_PASSWORD
+      - key: EMAIL_USE_SSL
+        fromService:
+          name: backend
+          type: secret
+          key: EMAIL_USE_SSL
+      - key: EMAIL_HOST
+        fromService:
+          name: backend
+          type: secret
+          key: EMAIL_HOST
+      - key: EMAIL_PORT
+        fromService:
+          name: backend
+          type: secret
+          key: EMAIL_PORT
+      - key: EMAIL_HOST_USER
+        fromService:
+          name: backend
+          type: secret
+          key: EMAIL_HOST_USER
+    autoDeploy: false
+
+  - type: web
+    name: db
+    env: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    image: postgres:17.4
+    plan: standard
+    envVars:
+      - key: POSTGRES_USER
+        sync: false
+      - key: POSTGRES_PASSWORD
+        sync: false
+      - key: POSTGRES_DB
+        sync: false
+    autoDeploy: false
+
+  - type: web
+    name: proxy
+    env: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    buildCommand: docker build --target proxy -t electron_proxy:0.1 .
+    plan: standard
+    envVars: []
+    autoDeploy: false
