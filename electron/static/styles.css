@@ -1,0 +1,130 @@
+button:focus {
+  outline: none;
+  background-color: transparent;
+  border: none;
+}
+
+.catalog-button {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    text-decoration: none;
+    padding: 8px 20px;
+    color: white;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.dropdown-menu {
+    display: none; /* по умолчанию скрыто */
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    min-width: 200px;
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transform-origin: top center;
+}
+
+.dropdown-menu.bottom {
+    /* Добавлено: стиль для меню, отображаемого снизу */
+    top: calc(100% + 5px); /* 5px - отступ от кнопки */
+    transform: translateY(5px);
+}
+.dropdown-menu.show.bottom{
+    transform: translateY(5px);
+}
+
+.dropdown-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.dropdown-menu li a {
+    display: block;
+    padding: 10px 15px;
+    text-decoration: none;
+    color: #333;
+}
+
+.dropdown-menu li a:hover {
+    background-color: #f0f0f0;
+}
+
+.dropdown-menu.show {
+    display: block; /* Показываем меню при добавлении класса 'show' */
+}
+
+
+
+
+
+body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #f0f0f0;
+    padding: 10px;
+    text-align: center;
+}
+
+main {
+    padding: 20px;
+}
+
+.order-item {
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.order-details {
+    margin-left: 20px;
+}
+
+.order-products {
+    list-style: none;
+    padding: 0;
+}
+
+.order-products li {
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: space-between;
+}
+.order-total {
+     display: flex;
+     justify-content: flex-end;
+     margin: 10px 0;
+     font-weight: bold;
+}
+.btn-view-details {
+     background-color: #007bff;
+     color: #fff;
+     border: none;
+     padding: 8px 15px;
+     border-radius: 5px;
+     cursor: pointer;
+     margin-left: auto;
+     display: block;
+}
+.btn-view-details:hover {
+    background-color: #0056b3;
+}
