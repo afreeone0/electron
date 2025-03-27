@@ -21,14 +21,12 @@ services:
       EMAIL_PORT: ${EMAIL_PORT}
       EMAIL_HOST_USER: ${EMAIL_HOST_USER}
     volumes:
-      - "electron_media:/electron/media"
+      - "media:/electron/media"
   db:
     image: postgres:17.4
     container_name: electron_db
-    ports:
-      - "5432:5432"
     volumes:
-      - "electron_db_data:/var/lib/postgresql/data"
+      - "db_data:/var/lib/postgresql/data"
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -43,8 +41,8 @@ services:
     ports:
       - "80:80"
     volumes:
-      - "electron_media:/var/www/media"
+      - "media:/var/www/media"
 
 volumes:
-  electron_db_data:
-  electron_media:
+  db_data:
+  media:

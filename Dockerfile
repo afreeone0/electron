@@ -7,7 +7,9 @@ RUN pip install --no-cache-dir gunicorn
 RUN pip install --no-cache-dir -r requirements.txt
 COPY ./electron .
 RUN python3 manage.py collectstatic --noinput
-ENTRYPOINT ["python3", "manage.py", "migrate", "&&", "gunicorn", "-w", "3", "-b", "0.0.0.0:8000", "electron.wsgi:application"]
+COPY ./entrypoint.sh .
+RUN chmod +x ./entrypoint.sh
+ENTRYPOINT ["sh", "./entrypoint.sh"]
 
 FROM nginx AS proxy
 COPY --from=builder /electron/staticfiles /var/www/static
