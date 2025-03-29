@@ -12,5 +12,6 @@ RUN chmod +x ./entrypoint.sh
 ENTRYPOINT ["sh", "./entrypoint.sh"]
 
 FROM nginx AS proxy
+COPY ./https /etc/nginx/ssl
 COPY --from=builder /electron/staticfiles /var/www/static
 COPY ./nginx.conf /etc/nginx/

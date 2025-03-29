@@ -199,4 +199,10 @@ CACHES = {
 CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1',
     'http://localhost',
+    'https://127.0.0.1',
+    'https://localhost',
 ]
+
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDER_PROTO', 'https')
