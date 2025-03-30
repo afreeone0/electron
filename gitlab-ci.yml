@@ -1,0 +1,22 @@
+stages:
+  - build
+  - test
+  - deploy
+
+build-job:
+  stage: build
+  script:
+    - docker build --target builder -t electron:0.1-beta .
+    - docker build --target proxy -t electron_proxy:0.1 .
+
+test-job:
+  stage: test
+  script:
+    - docker run --rm --name test_db -e POSTGRES_PASSWORD=test_db_pass5432 -p 5432:5432 -d postgres:17.4
+    - docker run --rm --name test_backend -e DB_PASSWORD=test_db_pass5432 electron:0.1-beta pytest -s -v
+    - docker stop test_db test_backend
+
+deploy-job:
+  stage: deploy
+  script:
+    - docker compose up -d
