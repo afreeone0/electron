@@ -1,0 +1,22 @@
+services:
+  backend:
+    image: electron:0.1-beta
+    container_name: test_backend
+    depends_on:
+      - db
+    environment:
+      DJANGO_SECRET_KEY: test_django_not_so_secret_but_anyway_key_66612345678910
+      DEBUG: False
+      DB_NAME: postgres
+      DB_ENGINE: django.db.backends.postgresql
+      DB_USER: postgres
+      DB_PASSWORD: test_db_pass5432
+      DB_HOST: postgres
+      DB_PORT: 5432
+  db:
+    image: postgres:17.4
+    container_name: test_db
+    environment:
+      POSTGRES_PASSWORD: test_db_pass5432
+    ports:
+      - "5432:5432"

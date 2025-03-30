@@ -12,9 +12,9 @@ build-job:
 test-job:
   stage: test
   script:
-    - docker run --rm --name test_db -e POSTGRES_PASSWORD=test_db_pass5432 -p 5432:5432 -d postgres:17.4
-    - docker run --rm --name test_backend -e DB_PASSWORD=test_db_pass5432 electron:0.1-beta pytest -s -v
-    - docker stop test_db test_backend
+    - docker compose -f compose-test-run.yml up -d
+    - docker exec test_backend pytest -s -v
+    - docker compose down
 
 deploy-job:
   stage: deploy
