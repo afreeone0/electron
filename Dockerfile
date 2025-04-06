@@ -13,5 +13,6 @@ ENTRYPOINT ["sh", "./entrypoint.sh"]
 
 FROM nginx AS proxy
 COPY ./https /etc/nginx/ssl
+COPY ./favicon.ico /var/www
 COPY --from=builder /electron/staticfiles /var/www/static
 COPY ./nginx.conf /etc/nginx/

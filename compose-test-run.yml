@@ -1,6 +1,6 @@
 services:
   backend:
-    image: electron:0.1-beta
+    image: electron:0.1
     container_name: test_backend
     depends_on:
       - db

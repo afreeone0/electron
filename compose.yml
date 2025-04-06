@@ -2,7 +2,7 @@ services:
   backend:
     build:
       target: builder
-    image: electron:0.1-beta
+    image: electron:0.1
     container_name: electron_backend
     depends_on:
       - db
@@ -36,7 +36,7 @@ services:
   proxy:
     build:
       target: proxy
-    image: electron_proxy:0.1
+    image: electron_proxy:0.2
     container_name: electron_proxy
     depends_on:
       - backend

@@ -6,8 +6,8 @@ stages:
 build-job:
   stage: build
   script:
-    - docker build --target builder -t electron:0.1-beta .
-    - docker build --target proxy -t electron_proxy:0.1 .
+    - docker build --target builder -t electron:0.1 .
+    - docker build --target proxy -t electron_proxy:0.2 .
 
 test-job:
   stage: test

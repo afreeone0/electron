@@ -1,3 +1,15 @@
+.catalog {
+  position: relative;
+}
+
+img.pfp {
+  background-repeat: no-repeat;
+  background-position: 50%;
+  border-radius: 50%;
+  width: 200px;
+  height: 200px;
+}
+
 button:focus {
   outline: none;
   background-color: transparent;
@@ -18,10 +30,7 @@ button:focus {
 }
 
 .dropdown-menu {
-    display: none; /* по умолчанию скрыто */
-    position: absolute;
-    top: 100%;
-    left: 0;
+    display: none;
     background-color: white;
     border: 1px solid #ddd;
     border-radius: 5px;
@@ -32,8 +41,7 @@ button:focus {
 }
 
 .dropdown-menu.bottom {
-    /* Добавлено: стиль для меню, отображаемого снизу */
-    top: calc(100% + 5px); /* 5px - отступ от кнопки */
+    top: calc(100% + 5px);
     transform: translateY(5px);
 }
 .dropdown-menu.show.bottom{
@@ -58,12 +66,8 @@ button:focus {
 }
 
 .dropdown-menu.show {
-    display: block; /* Показываем меню при добавлении класса 'show' */
+    display: block;
 }
-
-
-
-
 
 body {
     font-family: sans-serif;
