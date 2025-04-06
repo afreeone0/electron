@@ -19,55 +19,67 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
                 </div>
                 {% if carts %}
-                <div class="modal-body">
+                <div class="modal-body" id="cart-is-not-empty">
                     <h3 class="text-center mb-4">Корзина</h3>
                     <div class="container" id="cart-items-container">
                         <div class="card mb-3 text-bg-light shadow-lg">
                             {% for cart in carts %}
-                            <div class="card-header">
-                                <h5 class="card-title">{{cart.product}}</h5>
-                            </div>
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item">
-                                    <div class="row text-center">
-                                        <div class="col p-0">
-                                            <div class="input-group">
-                                                <span class="input-group-btn">
-                                                    <a class="btn btn-light btn-sm decrement" href="{% url 'cart_take_away' cart.product.product_slug %}">-</a>
-                                                </span>
-                                                <input type="text" class="form-control number" value="{{cart.quantity}}" readonly>
-                                                <span class="input-group-btn">
-                                                    <a class="btn btn-light btn-sm increment" href="{% url 'cart_add' cart.product.product_slug %}">+</a>
-                                                </span>
+                            <div id="product-exists-row">
+                                <div class="card-header">
+                                    <h5 class="card-title">{{cart.product}}</h5>
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">
+                                        <div class="row text-center">
+                                            <div class="col p-0">
+                                                <div class="input-group">
+                                                    <span class="input-group-btn">
+                                                        <a data-product-id="{{cart.product.id}}"
+                                                           data-product-slug="{{cart.product.product_slug}}"
+                                                           class="take-away btn btn-light btn-sm"
+                                                           href="{% url 'cart_take_away' %}">
+                                                            {% csrf_token %}
+                                                            -</a>
+                                                    </span>
+                                                    <p id="{{cart.product.product_slug}}">{{cart.quantity}}</p>
+                                                    <span class="input-group-btn">
+                                                        <a data-product-id="{{cart.product.id}}"
+                                                           data-product-slug="{{cart.product.product_slug}}"
+                                                           class="add-to-cart btn btn-light btn-sm"
+                                                           href="{% url 'cart_add' %}">
+                                                            {% csrf_token %}
+                                                            +</a>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="col p-0">
+                                                <p>x <em id="price-{{cart.product.product_slug}}">{{cart.product.get_price}}</em> = </p>
+                                            </div>
+                                            <div class="col p-0">$<strong id="total-product-{{cart.product.product_slug}}">{{cart.get_price_for_product}}</strong></div>
+                                            <div class="col p-0">
+                                                <a href="{% url 'cart_remove' %}" class="remove-from-cart" data-cart-id="{{cart.id}}">
+                                                    <img class="mx-1" src="{% static 'bin_icon.png' %}" alt="remove" width="16" height="16">
+                                                </a>
                                             </div>
                                         </div>
-                                        <div class="col p-0">
-                                            <p>x {{cart.product.get_price}} = </p>
-                                        </div>
-                                        <div class="col p-0"><strong>${{cart.get_price_for_product}}</strong></div>
-                                        <div class="col p-0">
-                                            <a href="{% url 'cart_remove' cart.product.product_slug %}" class="remove-from-cart" data-cart-id="">
-                                                <img class="mx-1" src="{% static 'bin_icon.png' %}" alt="remove" width="16" height="16">
-                                            </a>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
+                                    </li>
+                                </ul>
+                            </div>
                             {% endfor %}
                         </div>
                         <div class="card mb-3 shadow-lg">
                             <div class="card-footer">
-                                <p class="float-left">Итого <strong>{{carts.get_total_quantity}}</strong> товар(ов) на сумму</p>
-                                <h4 class="float-left"><strong>${{carts.get_total_price_for_user}}</strong></h4>
+                                <p class="float-left">Итого <strong id="total-products-in-cart">{{carts.get_total_quantity}}</strong> товар(ов) на сумму</p>
+                                <h4 class="float-left">$<strong id="total-price">{{carts.get_total_price_for_user}}</strong></h4>
                             </div>
-                            <a href="{% url 'cart_clear_up' %}">Очистить корзину</a>
+                            <a class="clear-up" href="{% url 'cart_clear_up' %}">Очистить корзину</a>
                         </div>
                         <a class="btn btn-dark" href="{% url 'make_order' %}">Оформить заказ</a>
                     </div>
                 </div>
                 {% else %}
                 <div class="modal-body">
-                    <h3 class="text-center mb-4">Корзина пуста</h3>
+                    <h1 class="text-center">Ваша корзина пуста</h1>
                 </div>
                 {% endif %}
             </div>

@@ -5,8 +5,22 @@
 {% load cart_tags %}
 {% user_carts request as carts %}
 {% if carts %}
-<div class="container mt-5">
-    <h1 class="text-center">Моя корзина</h1>
+<div id="cart-is-not-empty">
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container mt-5" id="cart-items-container">
+    <h1 class="text-center">Корзина</h1>
     <table class="table">
         <thead>
             <tr>
@@ -19,19 +33,29 @@
         </thead>
         <tbody>
         {% for cart in carts %}
-            <tr>
+            <tr id="product-exists-row">
                 <td><h5 class="card-title">{{cart.product}}</h5></td>
-                <td>${{cart.product.get_price}}</td>
+                <td>$<em id="price-{{cart.product.product_slug}}">{{cart.product.get_price}}</em></td>
                 <td>
                     <span class="input-group-btn">
-                        <a class="btn btn-light btn-sm decrement" href="{% url 'cart_take_away' cart.product.product_slug %}">-</a>
-                        {{cart.quantity}}
-                        <a class="btn btn-light btn-sm increment" href="{% url 'cart_add' cart.product.product_slug %}">+</a>
+                        <a data-product-id="{{cart.product.id}}"
+                           data-product-slug="{{cart.product.product_slug}}"
+                           class="take-away btn btn-light btn-sm"
+                           href="{% url 'cart_take_away' %}">
+                            {% csrf_token %}
+                            -</a>
+                        <strong id="{{cart.product.product_slug}}">{{cart.quantity}}</strong>
+                        <a data-product-id="{{cart.product.id}}"
+                           data-product-slug="{{cart.product.product_slug}}"
+                           class="add-to-cart btn btn-light btn-sm"
+                           href="{% url 'cart_add' %}">
+                            {% csrf_token %}
+                            +</a>
                     </span>
                 </td>
-                <td><strong>${{cart.get_price_for_product}}</strong></td>
+                <td>$<strong id="total-product-{{cart.product.product_slug}}">{{cart.get_price_for_product}}</strong></td>
                 <td>
-                    <a href="{% url 'cart_remove' cart.product.product_slug %}" class="remove-from-cart" data-cart-id="">
+                    <a href="{% url 'cart_remove' %}" class="remove-from-cart" data-cart-id="{{cart.id}}">
                         <img class="mx-1" src="{% static 'bin_icon.png' %}" alt="remove" width="16" height="16">
                     </a>
                 </td>
@@ -39,13 +63,31 @@
         {% endfor %}
         </tbody>
     </table>
-    <a href="{% url 'cart_clear_up' %}">Очистить корзину</a>
+    <a class="clear-up" href="{% url 'cart_clear_up' %}">{% csrf_token %}Очистить корзину</a>
     <div class="text-right">
-        <h4>Total: ${{carts.get_total_price_for_user}}</h4>
+        <h4>Total: $<em id="total-price">{{carts.get_total_price_for_user}}</em></h4>
         <a href="{% url 'make_order' %}" class="btn btn-primary">Заказать</a>
     </div>
 </div>
 {% else %}
 <h1 class="text-center">Ваша корзина пуста</h1>
 {% endif %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
 {% endblock %}
