@@ -143,20 +143,17 @@ $(document).ready(function () {
                 csrfmiddlewaretoken: $("[name=csrfmiddlewaretoken]").val(),
             },
             success: function (data) {
+                cartCount--;
+                goodsInCartCount.text(cartCount);
+                totalProductsInCart.text(cartCount);
+                intTotalPrice -= intProductPrice;
+                totalPrice.text(intTotalPrice);
                 if (productCount > 1) {
-                    cartCount--;
-                    goodsInCartCount.text(cartCount);
-                    totalProductsInCart.text(cartCount);
                     productCount--;
                     productInCartCount.text(productCount);
-
                     intProductTotalPrice -= intProductPrice;
-                    intTotalPrice -= intProductPrice;
                     productTotalPrice.text(intProductTotalPrice);
-                    totalPrice.text(intTotalPrice);
                 } else {
-                    intTotalPrice -= intProductPrice;
-                    totalPrice.text(intTotalPrice);
                     var newDiv = document.createElement("div");
                     newDiv.id = "removed-product";
                     newDiv.textContent = "Удалено";

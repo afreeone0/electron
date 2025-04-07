@@ -7,6 +7,9 @@ from django.contrib.auth.views import LoginView
 from cart.models import Cart
 from django.views.generic import CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+import logging
+
+logger = logging.getLogger('users_logger')
 
 
 class UserLoginView(LoginView):
@@ -17,11 +20,14 @@ class UserLoginView(LoginView):
     def form_valid(self, form):
         user = form.get_user()
 
+        logger.debug(f'user {user} is trying to log in and its form is valid')
+
         session_key = self.request.session.session_key
 
         if user:
             auth.login(self.request, user)
             messages.success(self.request, 'Logged in successfully!')
+            logger.debug(f'user {user} is successfully logged in')
 
             if session_key:
                 for cart_not_auth in Cart.objects.filter(session_key=session_key):
@@ -52,6 +58,7 @@ class UserProfileView(LoginRequiredMixin, UpdateView):
         return self.request.user
 
     def form_valid(self, form):
+        logger.debug(f'user {form.instance} just updated the profile')
         messages.success(self.request, 'Профиль обновлён')
         return super().form_valid(form)
 
@@ -70,8 +77,10 @@ class UserRegistrationView(CreateView):
         session_key = self.request.session.session_key
 
         form.save()
+        logger.debug(f'user {form.instance} just registered')
         messages.success(self.request, 'Вы успешно зарегестрировались')
         auth.login(self.request, form.instance)
+        logger.debug(f'user {form.instance} has been logged in after successful registration')
 
         if session_key:
             Cart.objects.filter(session_key=session_key).update(user=form.instance)
@@ -86,6 +95,7 @@ class UserRegistrationView(CreateView):
 
 @login_required(login_url='login')
 def logout(request):
+    logger.debug(f'user {request.user} is logging out')
     auth.logout(request)
     url = reverse('index')
     return redirect(url)

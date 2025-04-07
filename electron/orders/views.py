@@ -9,12 +9,23 @@ from django.forms import ValidationError
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, FormView
 from django.urls import reverse_lazy
+import logging
+
+logger = logging.getLogger('orders_logger')
 
 
 class MakeOrderView(LoginRequiredMixin, FormView):
     template_name = 'orders/make_order.html'
     form_class = CreateOrderForm
     success_url = reverse_lazy('orders_archive')
+
+    def post(self, request, *args, **kwargs):
+        logger.info(f'user {request.user} makes an order')
+        return super().post(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        logger.info(f'user {request.user} requests for making order page')
+        return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -29,13 +40,13 @@ class MakeOrderView(LoginRequiredMixin, FormView):
 
     def form_valid(self, form):
         request = self.request
+        logger.debug(f'user: {request.user}. making the transaction')
         try:
             with transaction.atomic():
                 user = request.user
                 cart_items = Cart.objects.filter(user=user)
 
                 if cart_items.exists():
-                    # Создать заказ
                     order = Order.objects.create(
                         user=user,
                         phone_number=form.cleaned_data['phone_number'],
@@ -43,7 +54,6 @@ class MakeOrderView(LoginRequiredMixin, FormView):
                         delivery_address=form.cleaned_data['delivery_address'],
                         payment_on_get=form.cleaned_data['payment_on_get'],
                     )
-                    # Создать заказанные товары
                     for cart_item in cart_items:
                         product = cart_item.product
                         name = cart_item.product.name
@@ -62,14 +72,14 @@ class MakeOrderView(LoginRequiredMixin, FormView):
                         )
                         product.quantity -= quantity
                         product.save()
-
-                    # Очистить корзину пользователя после создания заказа
                     cart_items.delete()
 
+                    logger.debug(f'user: {user}. transaction was successful')
                     messages.success(request, 'Заказ оформлен!')
                     return redirect('orders_archive')
         except ValidationError as e:
             messages.error(request, str(e))
+            logger.exception(e)
             return redirect('make_order')
 
     def form_invalid(self, form):
@@ -81,6 +91,10 @@ class OrdersArchiveView(LoginRequiredMixin, ListView):
     template_name = 'orders/orders_archive.html'
     paginate_by = 15
     context_object_name = 'orders'
+
+    def get(self, request, *args, **kwargs):
+        logger.info(f'user: {request.user}, requests {request.path} page')
+        return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
         q_set = (

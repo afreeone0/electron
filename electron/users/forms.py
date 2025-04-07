@@ -4,14 +4,11 @@ from django import forms
 from validators import get_validators_list
 from PIL import Image
 import logging
-
 from io import BytesIO
-from django.core.files import File
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
-format__ = "%(asctime)s %(levelname)s %(message)s"
-logging.basicConfig(filename='temp.log', level=logging.DEBUG, format=format__)
+logger = logging.getLogger('users_logger')
 
 
 class UserLoginForm(AuthenticationForm):
@@ -45,27 +42,27 @@ class UserProfileForm(UserChangeForm):
         return x, y, z, w
 
     def round_image(self, img, **kwargs):
-        logging.debug('inside round')
+        logger.debug('inside round_image func')
         given = Image.open(img)
-        logging.debug(f'opened the image, its size: {given.size}')
+        logger.debug(f'opened the image, its size: {given.size}')
         cropped = given.crop(self.get_params_of_a_cropped_square(*given.size))
-        logging.debug('cropped that')
+        logger.debug('cropped that')
         resized = cropped.resize((200, 200))
-        logging.debug('resized that')
+        logger.debug('resized that')
         buffer = BytesIO()
         img_format = img.name[img.name.find('.') + 1:]
-        logging.debug(f'image format = {img_format}')
+        logger.debug(f'image format = {img_format}')
         resized.save(fp=buffer, quality=100, format=img_format)
         image_content_file = ContentFile(content=buffer.getvalue())
         return InMemoryUploadedFile(image_content_file, **kwargs)
 
     def clean_image(self):
-        logging.debug('im inside clean_image')
+        logger.info('cleaning an image')
         image = self.cleaned_data['image']
-        logging.debug(f'got the image, type: {type(image)}')
+        logger.debug(f'got the image, type: {type(image)}')
         for validator in get_validators_list():
             validator(image)
-        logging.debug('validated')
+        logger.debug('validated the image')
         kwargs = {
             'charset': image.charset,
             'content_type': image.content_type,
@@ -74,7 +71,7 @@ class UserProfileForm(UserChangeForm):
             'size': image.size
         }
         image = self.round_image(image, **kwargs)
-        logging.debug(f'rounded, type: {type(image)}')
+        logger.info(f'rounded the image user sent. image was cleaned, type: {type(image)}\n')
         return image
 
     class Meta:

@@ -31,3 +31,4 @@ local_settings.py
 *.db
 media/
 fixtures/
+logs/

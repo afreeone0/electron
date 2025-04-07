@@ -12,8 +12,6 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
-
-import django.core.cache.backends.dummy
 from dotenv import load_dotenv
 load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -110,10 +108,10 @@ DATABASES = {
     'default': {
         'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.sqlite3'),
         'NAME': os.environ.get('DB_NAME', BASE_DIR / 'db.sqlite3'),
-        # 'USER': os.getenv('DB_USER'),
-        # 'PASSWORD': os.getenv('DB_PASSWORD'),
-        # 'HOST': os.getenv('DB_HOST'),
-        # 'PORT': os.getenv('DB_PORT'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
     }
 }
 
@@ -206,3 +204,72 @@ CORS_ALLOWED_ORIGINS = [
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDER_PROTO', 'https')
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'default': {
+            'format': "[%(asctime)s] %(levelname)s — in module %(module)s at line %(lineno)s: %(message)s",
+        }
+    },
+    "handlers": {
+        "standard_out_handler": {
+            "level": "WARNING",
+            "formatter": "default",
+            "class": "logging.StreamHandler"
+        },
+        "cart_file_handler": {
+            "level": "INFO",
+            "formatter": "default",
+            "class": "logging.FileHandler",
+            "filename": "logs/cart.log"
+        },
+        "orders_file_handler": {
+            "level": "INFO",
+            "formatter": "default",
+            "class": "logging.FileHandler",
+            "filename": "logs/orders.log"
+        },
+        "store_file_handler": {
+            "level": "INFO",
+            "formatter": "default",
+            "class": "logging.FileHandler",
+            "filename": "logs/store.log"
+        },
+        "users_file_handler": {
+            "level": "INFO",
+            "formatter": "default",
+            "class": "logging.FileHandler",
+            "filename": "logs/users.log"
+        },
+        "error_file_handler": {
+            "level": "ERROR",
+            "formatter": "default",
+            "class": "logging.FileHandler",
+            "filename": "logs/errors.log"
+        }
+    },
+    "loggers": {
+        "cart_logger": {
+            "handlers": ["standard_out_handler", "cart_file_handler", "error_file_handler"],
+            "level": "DEBUG",
+            "propagate": False
+        },
+        "orders_logger": {
+            "handlers": ["standard_out_handler", "orders_file_handler", "error_file_handler"],
+            "level": "DEBUG",
+            "propagate": False
+        },
+        "store_logger": {
+            "handlers": ["standard_out_handler", "store_file_handler"],
+            "level": "DEBUG",
+            "propagate": False
+        },
+        "users_logger": {
+            "handlers": ["standard_out_handler", "users_file_handler"],
+            "level": "DEBUG",
+            "propagate": False
+        }
+    }
+}
