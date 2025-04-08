@@ -28,7 +28,7 @@ class Cart(models.Model):
     created_timestamp = models.DateTimeField(auto_now_add=True)
 
     def get_price_for_product(self):
-        return round(self.product.get_price() * self.quantity, 2)
+        return self.product.get_price() * self.quantity
 
     @classmethod
     def add_to_cart(cls, product, quantity, user=None, session_key=None):
