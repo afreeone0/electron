@@ -1,4 +1,4 @@
-services:
+вщсвщсservices:
   backend:
     image: electron:0.1
     container_name: test_backend
@@ -11,7 +11,7 @@ services:
       DB_ENGINE: django.db.backends.postgresql
       DB_USER: postgres
       DB_PASSWORD: test_db_pass5432
-      DB_HOST: postgres
+      DB_HOST: db
       DB_PORT: 5432
   db:
     image: postgres:17.4

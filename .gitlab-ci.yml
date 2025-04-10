@@ -13,7 +13,6 @@ test-job:
   stage: test
   script:
     - docker compose -f compose-test-run.yml up -d
-    - docker exec test_backend python3 manage.py migrate
     - docker exec test_backend pytest -s -v
     - docker compose down
 
