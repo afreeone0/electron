@@ -6,6 +6,7 @@ services:
     container_name: electron_backend
     depends_on:
       - db
+    env_file: ./production.env
     environment:
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
       DEBUG: ${DEBUG}
@@ -27,6 +28,7 @@ services:
     container_name: electron_db
     volumes:
       - "db_data:/var/lib/postgresql/data"
+    env_file: ./production.env
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}

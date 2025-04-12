@@ -106,7 +106,7 @@ WSGI_APPLICATION = 'electron.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.sqlite3'),
+        'ENGINE': os.getenv('DB_ENGINE'),
         'NAME': os.environ.get('DB_NAME', BASE_DIR / 'db.sqlite3'),
         'USER': os.getenv('DB_USER'),
         'PASSWORD': os.getenv('DB_PASSWORD'),
@@ -187,10 +187,16 @@ SPECTACULAR_SETTINGS = {
     'SERVE_INCLUDE_SCHEMA': False
 }
 
+if DEBUG:
+    CACHE_BACKEND = 'django.core.cache.backends.dummy.DummyCache'
+else:
+    CACHE_BACKEND = ''
+
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+        'BACKEND': CACHE_BACKEND,
         'TIMEOUT': 0,
+        'OPTIONS': {'CULL_FREQUENCY': 2}
     }
 }
 

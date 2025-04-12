@@ -3,6 +3,7 @@ from .models import Cart
 from django.views.generic import TemplateView, View
 from django.http import JsonResponse
 import logging
+from django.views.decorators.cache import cache_page
 
 logger = logging.getLogger('cart_logger')
 

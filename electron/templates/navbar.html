@@ -1,3 +1,4 @@
+{% load cache %}
 {% load electron_tags %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="{% url 'index' %}">Electron</a>
@@ -32,6 +33,7 @@
                 <button class="catalog-button nav-link">Каталог</button>
                 <div class="dropdown-menu catalog">
                     <ul>
+                        {% cache 3600 navbar_catalog %}
 
                         {% get_categories as categories %}
                         {% for category in categories %}
@@ -43,6 +45,7 @@
                         </li>
                         {% endfor %}
 
+                        {% endcache %}
                     </ul>
                 </div>
             </li>

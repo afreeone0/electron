@@ -10,6 +10,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, FormView
 from django.urls import reverse_lazy
 import logging
+from django.core.cache import cache
+from django.template.loader import render_to_string
+from django.http import HttpResponse
 
 logger = logging.getLogger('orders_logger')
 
@@ -94,7 +97,15 @@ class OrdersArchiveView(LoginRequiredMixin, ListView):
 
     def get(self, request, *args, **kwargs):
         logger.info(f'user: {request.user}, requests {request.path} page')
-        return super().get(request, *args, **kwargs)
+        cache_key = f'orders{request.path}{request.user.id}'
+        logger.debug(f'cache key is {cache_key}')
+        response = cache.get(cache_key)
+        if not response:
+            response = super().get(request, *args, **kwargs)
+            response = render_to_string(response.template_name, context=response.context_data,
+                                        request=request, using=response.using)
+            cache.set(cache_key, response, 3600)
+        return HttpResponse(response)
 
     def get_queryset(self):
         q_set = (
