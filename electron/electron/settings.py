@@ -189,12 +189,16 @@ SPECTACULAR_SETTINGS = {
 
 if DEBUG:
     CACHE_BACKEND = 'django.core.cache.backends.dummy.DummyCache'
+    LOCATION = None
 else:
-    CACHE_BACKEND = ''
+    CACHE_BACKEND = 'django.core.cache.backends.redis.RedisCache'
+    # e.g. redis://redis_cache:6379 if in compose and redis service is named redis_cache
+    LOCATION = 'redis://redis_cache:6379'
 
 CACHES = {
     'default': {
         'BACKEND': CACHE_BACKEND,
+        'LOCATION': LOCATION,
         'TIMEOUT': 0,
         'OPTIONS': {'CULL_FREQUENCY': 2}
     }

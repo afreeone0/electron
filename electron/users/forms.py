@@ -7,6 +7,7 @@ import logging
 from io import BytesIO
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.db.models.fields.files import ImageFieldFile
 
 logger = logging.getLogger('users_logger')
 
@@ -60,18 +61,19 @@ class UserProfileForm(UserChangeForm):
         logger.info('cleaning an image')
         image = self.cleaned_data['image']
         logger.debug(f'got the image, type: {type(image)}')
-        for validator in get_validators_list():
-            validator(image)
-        logger.debug('validated the image')
-        kwargs = {
-            'charset': image.charset,
-            'content_type': image.content_type,
-            'field_name': image.field_name,
-            'name': image.name,
-            'size': image.size
-        }
-        image = self.round_image(image, **kwargs)
-        logger.info(f'rounded the image user sent. image was cleaned, type: {type(image)}\n')
+        if not isinstance(image, ImageFieldFile):
+            for validator in get_validators_list():
+                validator(image)
+            logger.debug('validated the image')
+            kwargs = {
+                'charset': image.charset,
+                'content_type': image.content_type,
+                'field_name': image.field_name,
+                'name': image.name,
+                'size': image.size
+            }
+            image = self.round_image(image, **kwargs)
+            logger.info(f'rounded the image user sent. image was cleaned, type: {type(image)}\n')
         return image
 
     class Meta:

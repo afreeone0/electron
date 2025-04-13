@@ -6,6 +6,7 @@ services:
     container_name: electron_backend
     depends_on:
       - db
+      - redis_cache
     env_file: ./production.env
     environment:
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
@@ -35,6 +36,9 @@ services:
       POSTGRES_DB: ${DB_NAME}
     ports:
       - "5432:5432"
+  redis_cache:
+    image: redis
+    container_name: electron_cache
   proxy:
     build:
       target: proxy

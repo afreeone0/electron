@@ -64,8 +64,7 @@ class CategoryView(ListView):
         __params = request.GET.urlencode()
         logger.info(f'user {request.user} requests a category page ({request.path} '
                     f'with params{__params})')
-        params = f'?{__params}' if __params else ''
-        cache_key = f'{request.path}{params}'
+        cache_key = f'store{request.path}'
         logger.debug(f'cache key is {cache_key}')
         response = cache.get(cache_key)
         if not response:
