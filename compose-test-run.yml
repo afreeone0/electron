@@ -1,4 +1,4 @@
-вщсвщсservices:
+services:
   backend:
     image: electron:0.1
     container_name: test_backend
