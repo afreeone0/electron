@@ -6,6 +6,7 @@ from .utils import query_search
 from django.views.generic import TemplateView, DetailView, ListView
 from django.core.cache import cache
 import logging
+from django.http import HttpResponse
 
 logger = logging.getLogger('store_logger')
 
@@ -24,7 +25,11 @@ class IndexView(TemplateView):
 
 
 def page_not_found(request, exception=None):
-    template404 = render_to_string('page_not_found.html')
+    cache_key = 'electron_404_not_found'
+    template404 = cache.get(cache_key)
+    if not template404:
+        template404 = render_to_string('page_not_found.html')
+        cache.set(cache_key, template404, 60*60)
     return HttpResponseNotFound(template404)
 
 
@@ -33,7 +38,15 @@ class AboutView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         logger.info(f'user {request.user} sent a get request for the about page')
-        return super().get(request, *args, **kwargs)
+        cache_key = f'store{request.path}'
+        logger.debug(f'cache key is {cache_key}')
+        response = cache.get(cache_key)
+        if not response:
+            response = super().get(request, *args, **kwargs)
+            response = render_to_string(response.template_name, context=response.context_data,
+                                        request=request, using=response.using)
+            cache.set(cache_key, response, 3600)
+        return HttpResponse(response)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -48,8 +61,18 @@ class CategoryView(ListView):
     paginate_by = 15
 
     def get(self, request, *args, **kwargs):
-        logger.info(f'user {request.user} requests a category page ({request.path})')
-        return super().get(request, *args, **kwargs)
+        __params = request.GET.urlencode()
+        logger.info(f'user {request.user} requests a category page ({request.path} '
+                    f'with params{__params})')
+        cache_key = f'store{request.path}'
+        logger.debug(f'cache key is {cache_key}')
+        response = cache.get(cache_key)
+        if not response:
+            response = super().get(request, *args, **kwargs)
+            response = render_to_string(response.template_name, context=response.context_data,
+                                        request=request, using=response.using)
+            cache.set(cache_key, response, 900)
+        return HttpResponse(response)
 
     def get_queryset(self):
         logger.debug('forming a queryset for the request')
@@ -60,27 +83,16 @@ class CategoryView(ListView):
             'query': self.request.GET.get('q'),
         }
         logger.debug(f'query params of the request: {query_params}')
-
-        cache_params = {k: v for k, v in query_params.items() if v is not None}
-        cache_key = f'category:{category_slug}' + '&'.join(cache_params)
-        products = cache.get(cache_key)
-
-        if products is None:
-            category_object = get_object_or_404(Category, category_slug=category_slug)
-            self.kwargs['category_object'] = category_object
-
-            products = super().get_queryset().filter(category=category_object, quantity__gte=1)
-            logger.debug('got the products queryset')
-            if query_params['query']:
-                products = query_search(query_params['query'], products)
-
-            if query_params['discount']:
-                products = products.filter(discount__gt=0)
-
-            if query_params['order_by_price'] and query_params['order_by_price'] != 'default':
-                products = products.order_by(query_params['order_by_price'])
-
-            cache.set(cache_key, products.values())
+        category_object = get_object_or_404(Category, category_slug=category_slug)
+        self.kwargs['category_object'] = category_object
+        products = super().get_queryset().filter(category=category_object, quantity__gte=1)
+        logger.debug('got the products queryset')
+        if query_params['query']:
+            products = query_search(query_params['query'], products)
+        if query_params['discount']:
+            products = products.filter(discount__gt=0)
+        if query_params['order_by_price'] and query_params['order_by_price'] != 'default':
+            products = products.order_by(query_params['order_by_price'])
         logger.debug('returning the queryset')
         return products
 
@@ -98,17 +110,21 @@ class ProductView(DetailView):
 
     def get(self, request, *args, **kwargs):
         logger.info(f'user {request.user} requests for the product page ({request.path})')
-        return super().get(request, *args, **kwargs)
+        cache_key = f'store{request.path}'
+        logger.debug(f'cache key is {cache_key}')
+        response = cache.get(cache_key)
+        if not response:
+            response = super().get(request, *args, **kwargs)
+            response = render_to_string(response.template_name, context=response.context_data,
+                                        request=request, using=response.using)
+            cache.set(cache_key, response, 3600)
+        return HttpResponse(response)
 
     def get_object(self, queryset=None):
         product_slug = self.kwargs.get(self.slug_url_kwarg)
-        cache_key = f'product_slug:{product_slug}'
-        product_object = cache.get(cache_key)
-        if product_object is None:
-            product_object = (get_object_or_404(Product, product_slug=product_slug),)
-            cache.set(cache_key, product_object)
+        product_object = get_object_or_404(Product, product_slug=product_slug)
         logger.debug('returning the object user requested a detailed view for')
-        return product_object[0]
+        return product_object
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

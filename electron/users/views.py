@@ -1,4 +1,5 @@
 from django.shortcuts import redirect, reverse
+from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from .forms import UserLoginForm, UserProfileForm, UserRegistrationForm
 from django.contrib import auth, messages
@@ -8,6 +9,8 @@ from cart.models import Cart
 from django.views.generic import CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 import logging
+from django.http import HttpResponse
+from django.core.cache import cache
 
 logger = logging.getLogger('users_logger')
 
@@ -53,6 +56,18 @@ class UserProfileView(LoginRequiredMixin, UpdateView):
     template_name = 'users/profile.html'
     form_class = UserProfileForm
     success_url = reverse_lazy('profile')
+
+    def get(self, request, *args, **kwargs):
+        logger.info(f'user {request.user} requested for its profile page')
+        cache_key = f'users{request.path}{request.user.id}'
+        logger.debug(f'cache key for {request.user} is {cache_key}')
+        response = cache.get(cache_key)
+        if not response:
+            response = super().get(request, *args, **kwargs)
+            response = render_to_string(response.template_name, context=response.context_data,
+                                        request=request, using=response.using)
+            cache.set(cache_key, response, 3600)
+        return HttpResponse(response)
 
     def get_object(self, queryset=None):
         return self.request.user
