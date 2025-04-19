@@ -211,11 +211,9 @@ if not DEBUG:
         'https://127.0.0.1',
         'https://localhost',
     ]
-    # CSRF_TRUSTED_ORIGINS = [*CORS_ALLOWED_ORIGINS]
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDER_PROTO', 'https')
-    SECURE_SSL_REDIRECT = True
 
 LOGGING = {
     'version': 1,
