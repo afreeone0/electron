@@ -199,7 +199,6 @@ CACHES = {
     'default': {
         'BACKEND': CACHE_BACKEND,
         'LOCATION': LOCATION,
-        'TIMEOUT': 0,
         'OPTIONS': {'CULL_FREQUENCY': 2}
     }
 }
