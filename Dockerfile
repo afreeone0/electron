@@ -6,6 +6,7 @@ COPY ./requirements.txt .
 RUN pip install --no-cache-dir gunicorn
 RUN pip install --no-cache-dir -r requirements.txt
 COPY ./electron .
+RUN mkdir ./logs
 RUN python3 manage.py collectstatic --noinput
 COPY ./entrypoint.sh .
 RUN chmod +x ./entrypoint.sh

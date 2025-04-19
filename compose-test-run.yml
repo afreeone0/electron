@@ -7,7 +7,7 @@ services:
       - redis_cache
     environment:
       DJANGO_SECRET_KEY: test_django_not_so_secret_but_anyway_key_66612345678910
-      DEBUG: False
+      DEBUG: 0
       DB_NAME: postgres
       DB_ENGINE: django.db.backends.postgresql
       DB_USER: postgres

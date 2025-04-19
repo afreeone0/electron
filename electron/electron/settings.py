@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG')
+DEBUG = bool(int(os.environ.get('DEBUG', '0')))
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
@@ -204,16 +204,18 @@ CACHES = {
     }
 }
 
-CORS_ALLOWED_ORIGINS = [
-    'http://127.0.0.1',
-    'http://localhost',
-    'https://127.0.0.1',
-    'https://localhost',
-]
-
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDER_PROTO', 'https')
+if not DEBUG:
+    CORS_ALLOWED_ORIGINS = [
+        'http://127.0.0.1',
+        'http://localhost',
+        'https://127.0.0.1',
+        'https://localhost',
+    ]
+    # CSRF_TRUSTED_ORIGINS = [*CORS_ALLOWED_ORIGINS]
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDER_PROTO', 'https')
+    SECURE_SSL_REDIRECT = True
 
 LOGGING = {
     'version': 1,
