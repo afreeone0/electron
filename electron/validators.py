@@ -10,7 +10,7 @@ def validate_image_type(image):
 
 def validate_image_size(image):
     if image:
-        if image.size > 5 * 1024 * 1024:
+        if image.size > 2.5 * 1024 * 1024:
             raise ValidationError('Слишком большое изображение')
 
 
