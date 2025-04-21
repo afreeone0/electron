@@ -50,6 +50,10 @@ class MakeOrderView(LoginRequiredMixin, FormView):
                 cart_items = Cart.objects.filter(user=user)
 
                 if cart_items.exists():
+                    if len(Order.objects.filter(user=user, status='В обработке', payment_on_get=True)) > 2:
+                        raise ValidationError('Слишком много заказов, которые находятся в обработке '
+                                              'и оплачиваются при получении')
+
                     order = Order.objects.create(
                         user=user,
                         phone_number=form.cleaned_data['phone_number'],

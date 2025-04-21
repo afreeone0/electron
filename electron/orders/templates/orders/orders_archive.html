@@ -22,14 +22,15 @@
             <div class="order-details">
                 <ul class="order-products">
 
-                    {% for item in order.orderitem_set.all %}
+                    {% for item in order.orderItems.all %}
                    <li>
                        <span class="product-name">{{item.name}}</span>
                        <span class="product-qty">Кол-во: {{ item.quantity }}</span>
-                       <span class="product-price">Цена: ${{ item.price }}</span>
-                       <span class="product-price">Итоговая цена: ${{ item.products_price }}</span>
+                       <span class="product-price">Цена 1 продукта: ${{ item.price }}</span>
+                       <span class="product-price">Цена: ${{ item.products_price }}</span>
                     </li>
                     {% endfor %}
+                    <li><strong>Заказ на сумму ${{order.orderItems.total_price}}</strong></li>
 
                 </ul>
             </div>
